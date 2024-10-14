@@ -54,7 +54,11 @@ class Database():
         """
         
         path = os.path.dirname(self.Path)
-        os.makedirs(path, exist_ok = True)
+        
+        try:
+            os.makedirs(path, exist_ok = True)
+        except FileNotFoundError:
+            return
         
     def Save(self, data: dict):
         """
