@@ -67,7 +67,10 @@ class InfoCog(BaseCog):
         if message.author.bot:
             return
         
-        # Show info when pinged
+        # Show info when pinged (or show info to the user that the message author replied to)
+        if message.reference is not None:
+            message = message.reference
+        
         await message.reply(embed = embeds.Bot(self.Bot), mention_author = True)
             
     # ---- // Commands
