@@ -26,48 +26,53 @@ limitations under the License.
 # ---- // Imports
 import discord
 from discord.ext import commands
-import os
 
-from libs.db import Database
+import os
+import time
+
+from jsonstore import JsonStore
 from libs import print
 
-from libs.archean import (
-    Archean
-)
-
-from services import (
-    StatusService
-)
-
 # ---- // Main
-class Bot(commands.Bot):
+class Bot(commands.AutoShardedBot):
     """
     A custom class descending from discord.ext.commands.Bot.
     """    
     
-    def __init__(self, database: Database, archean: Archean):
+    def __init__(self, database: JsonStore):
         """
         Initializes the bot.
 
         Args:
             database (Database): The database to use.
-            archean (Archean): The Archean API wrapper to use.
         """        
         
         super().__init__(
-            command_prefix = "!",
-            intents = discord.Intents(messages = True, guilds = True)
+            intents = discord.Intents.all()
         )
         
         self.Database = database
-        self.Archean = archean
+        self.StartedAt = 0
+        self.Ready = False
+
+    async def LoadCogs(self):
+        """
+        Loads all cogs in the `cogs` directory.
+        """
         
-        # Services
-        self.StatusService = StatusService()
+        for cog in os.listdir("cogs"):
+            if cog.endswith(".py"):
+                await self.load_extension(f"cogs.{cog[:-3]}")
+                print.success("Cogs", f"Loaded `{cog}`.")
+
+    async def setup_hook(self):
+        """
+        Called before websocket connection, but after client login.
+        Used to setup cogs, etc.
+        """        
         
-        self.Services = [
-            self.StatusService
-        ]
+        self.StartedAt = time.time()
+        await self.LoadCogs()
 
     async def on_ready(self):
         """
@@ -75,12 +80,5 @@ class Bot(commands.Bot):
         """        
         
         print.success("Bot", f"Bot is online @ {self.user.name} ({self.user.id})")
-        
-        # Register cogs
-        for cog in os.listdir("cogs"):
-            if cog.endswith(".py"):
-                await self.load_extension(f"cogs.{cog[:-3]}")
-        
-        # Start services
-        for service in self.Services:
-            await service.Start(self)
+        self.Ready = True
+        await self.tree.sync()
