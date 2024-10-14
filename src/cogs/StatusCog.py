@@ -1,9 +1,9 @@
 # // ---------------------------------------------------------------------
-# // ------- [Services] Status Service
+# // ------- [Cogs] Status Cog
 # // ---------------------------------------------------------------------
 
 """
-A service for showing the status of the XHP server.
+A cog for showing the status of the XHP server, as well as providing commands.
 Repo: https://github.com/Cuh4/XHPBot
 
 ---
@@ -26,55 +26,47 @@ limitations under the License.
 # ---- // Imports
 import discord
 from discord.ext.tasks import loop
+from discord.ext import commands
+from discord import app_commands
+
+from cogs.BaseCog import BaseCog
 
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING: # prevent circular dependency error. we only need this bot impor tfor typechecking anyway
+if TYPE_CHECKING:
     from bot import Bot
 
-import time
-
 import libs.env as env
-import libs.embeds as embeds
-import libs.timestamp as timestamp
 from libs import print
 
 from libs.archean import (
-    Server,
-    PasswordProtected
+    Archean,
+    Server
 )
 
 import embeds
-
-from . import BaseService
+import checks
 
 # ---- // Main
-class StatusService(BaseService):
+class StatusCog(BaseCog):
     """
-    A service for showing the status of the XHP server.
+    A cog for showing the status of the XHP server.
     """
     
-    def __init__(self):
+    def __init__(self, bot: "Bot"):
         """
-        Initializes `StatusService` class objects.
+        Initializes `StatusCog` class objects.
         """        
         
-        super().__init__("StatusService")
-        
-    async def ServiceStartAsync(self, bot: "Bot"):
-        """
-        Starts the service.
+        super().__init__(bot)
 
-        Args:
-            bot (Bot): The bot to pass to the service.
-        """
-        
-        # Set up attributes
-        self.Loop = loop(seconds = env.GetRefreshRate())(self.UpdateStatus)
-        self.StatusRefreshRate = env.GetRefreshRate()
+        self.Archean = Archean()
         self.ServerIP = env.GetServerIP()[0]
         self.ServerPort = env.GetServerIP()[1]
+        self.StatusLoop = loop(seconds = env.GetRefreshRate())(self.UpdateStatus)
         
+    # ---- // Callbacks
+    async def CogStartAsync(self):
         # Get channel for server status message
         try:
             self.StatusChannel = self.Bot.get_channel(env.GetStatusChannel()) or await self.Bot.fetch_channel(env.GetStatusChannel())
@@ -82,20 +74,21 @@ class StatusService(BaseService):
             if self.StatusChannel is None: # get_channel() returns None
                 raise discord.NotFound
         except discord.NotFound:
-            print.error(self.Name, "Status channel doesn't exist. Please create one and update .env!")
+            print.error(self.qualified_name, "Status channel doesn't exist. Please create one and update .env!")
             exit(0)
 
         # Get message if already sent, otherwise send a new one
         try:
             self.StatusMessage = await self.StatusChannel.fetch_message(self.GetSavedStatusMessageID() or 0)
         except discord.NotFound:
-            print.info(self.Name, "Status message doesn't exist. Sending a new one!")
+            print.info(self.qualified_name, "Status message doesn't exist. Sending a new one!")
             self.StatusMessage = await self.StatusChannel.send(embed = embeds.Info("Setting up..."))
             self.SaveStatusMessageID()
-        
+            
         # Start loop
-        self.Loop.start()
+        self.StatusLoop.start()
         
+    # ---- // Methods
     def GetSavedStatusMessageID(self) -> int|None:
         """
         Returns the message ID of the server status message if any.
@@ -104,16 +97,17 @@ class StatusService(BaseService):
             int|None: The message ID, or none if not saved.
         """        
         
-        return self.Bot.Database.Load().get("status_message_id")
+        try:
+            return self.Database.status_message_id
+        except AttributeError:
+            return None
     
     def SaveStatusMessageID(self):
         """
         Saves the message ID of the server status message.
         """        
         
-        self.Bot.Database.Save({
-            "status_message_id" : self.StatusMessage.id
-        })
+        self.Database.status_message_id = self.StatusMessage.id
         
     def FetchServerInformation(self) -> Server|None:
         """
@@ -123,7 +117,7 @@ class StatusService(BaseService):
             Server|None: The server to show server status for.
         """        
         
-        return self.Bot.Archean.GetServerByIP(self.ServerIP, self.ServerPort)
+        return self.Archean.GetServerByIP(self.ServerIP, self.ServerPort)
     
     async def UpdateStatus(self):
         """
@@ -134,11 +128,53 @@ class StatusService(BaseService):
         try:
             server = self.FetchServerInformation()
         except Exception as error:
-            print.error(self.Name, f"Failed to fetch server information: {error}")
+            print.error(self.qualified_name, f"Failed to fetch server information: {error}")
             server = None
         
         # Edit message
         try:
             await self.StatusMessage.edit(embed = embeds.Server(server))
         except discord.HTTPException as error:
-            print.error(self.Name, f"Failed to update server status message: {error}")
+            print.error(self.qualified_name, f"Failed to update server status message: {error}")
+            
+    # ---- // Commands
+    @app_commands.command(name = "status")
+    @app_commands.check(checks.bot.Ready)
+    async def StatusCommand(self, interaction: discord.Interaction):
+        """
+        Shows the status of the server.
+
+        Args:
+            interaction (discord.Interaction): The context of the command.
+        """            
+        
+        server = self.FetchServerInformation()
+        await interaction.response.send_message(ephemeral = True, embed = embeds.CompactServer(server))
+        
+    @app_commands.command(name = "online")
+    @app_commands.check(checks.bot.Ready)
+    async def OnlineCommand(self, interaction: discord.Interaction):
+        """
+        Shows if the server is online or not.
+
+        Args:
+            interaction (discord.Interaction): The context of the command.
+        """             
+        
+        server = self.FetchServerInformation()
+        
+        if server is not None:
+            await interaction.response.send_message(ephemeral = True, embed = embeds.Info(f"🟢 | The server is online."))
+        else:
+            await interaction.response.send_message(ephemeral = True, embed = embeds.Error("🔴 | The server is offline."))
+            
+async def setup(bot: "Bot"):
+    """
+    Sets up the cog.
+    Called automatically by `bot.load_extension(...)`.
+
+    Args:
+        bot (Bot): The bot to provide to the cog.
+    """    
+    
+    await bot.add_cog(StatusCog(bot))
