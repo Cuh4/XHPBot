@@ -70,12 +70,16 @@ class BaseCog(commands.Cog):
         """
         Called when the cog is started (non-async).
         """
+
+        pass
         
     @abstractmethod
     async def CogStartAsync(self):
         """
         Called when the cog is started (async).
-        """        
+        """
+        
+        pass
         
 async def setup(bot: "Bot"):
     """
@@ -84,6 +88,6 @@ async def setup(bot: "Bot"):
 
     Args:
         bot (Bot): The bot to provide to the cog.
-    """    
+    """
     
     pass
