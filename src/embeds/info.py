@@ -1,9 +1,9 @@
 # // ---------------------------------------------------------------------
-# // ------- [Embeds] Init
+# // ------- [Embeds] Info
 # // ---------------------------------------------------------------------
 
 """
-A collection of embeds.
+An info embed.
 Repo: https://github.com/Cuh4/XHPBot
 
 ---
@@ -24,9 +24,25 @@ limitations under the License.
 """
 
 # ---- // Imports
-from .bot import embed as Bot
-from .compact_server import embed as CompactServer
-from .error import embed as Error
-from .info import embed as Info
-from .server import embed as Server
-from .success import embed as Success
+import discord
+
+# ---- // Main
+def embed(text: str, title: str = None, imgBanner: str = None, imgIcon: str = None) -> discord.Embed:
+    """
+    Returns an info embed.
+
+    Args:
+        text (str): The text to display.
+        title (str): The title of the embed.
+        imgBanner (str): The banner image URL.
+        imgIcon (str): The icon image URL.
+        
+    Returns:
+        Embed: The info embed.
+    """
+    
+    return discord.Embed(
+        title = title,
+        description = text,
+        color = discord.Color.from_rgb(125, 125, 255)
+    ).set_thumbnail(url = imgIcon).set_image(url = imgBanner)

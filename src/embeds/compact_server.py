@@ -1,9 +1,9 @@
 # // ---------------------------------------------------------------------
-# // ------- [Embeds] Server
+# // ------- [Embeds] Compact Server
 # // ---------------------------------------------------------------------
 
 """
-An embed for displaying information on an Archean server.
+An embed for displaying information on an Archean server. This embed is compact compared to the other one.
 Repo: https://github.com/Cuh4/XHPBot
 
 ---
@@ -25,7 +25,6 @@ limitations under the License.
 
 # ---- // Imports
 import discord
-import time
 
 from libs.archean import (
     Server,
@@ -33,12 +32,11 @@ from libs.archean import (
 )
 
 from libs import env
-from libs import timestamp
 
 # ---- // Main
 def embed(server: Server) -> discord.Embed:
     """
-    Returns an embed that shows information on an Archean server.
+    Returns an embed that shows compacted information on an Archean server.
 
     Args:
         server (Server): The server to show information on.
@@ -47,29 +45,21 @@ def embed(server: Server) -> discord.Embed:
         discord.Embed: The created embed.
     """    
     
-    lastUpdated = f"{timestamp.FormatTimestamp(time.time(), "R")}"
-    
     if server:
         embed = discord.Embed(
             title = f"☀️ | {server.Name}",
 
             description = "\n".join([
                 f"**⚙️ | {server.Gamemode} Server • " + ("🔒 | Password Protected" if server.PasswordProtected == PasswordProtected.Protected else "🔓 | No Password") + "**",
-                f"🔗 | " + (f"{server.IP}:{server.Port}" if not env.GetHideIP() else "IP Hidden"),
                 f"👥 | {server.Players}/{server.MaxPlayers} Players",
-                "",
-                f"-# Last Updated: {lastUpdated}"
             ]),
             
             color = env.GetStatusEmbedColor()
         )
-        
-        embed.set_footer(text = f"Server Version: v{server.Version}")
-        embed.set_image(url = env.GetStatusBannerURL())
     else:
         embed = discord.Embed(
             title = "Server",
-            description = f"⛔ | The server is offline.\n-# Last updated: {lastUpdated}",
+            description = f"⛔ | The server is offline.",
             color = discord.Color.red()
         )
         
