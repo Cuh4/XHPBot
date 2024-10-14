@@ -26,10 +26,10 @@ limitations under the License.
 # ---- // Imports
 import discord
 from discord.ext import commands
-
-from threading import Thread
+import os
 
 from libs.db import Database
+from libs import print
 
 from libs.archean import (
     Archean
@@ -74,7 +74,13 @@ class Bot(commands.Bot):
         Called when the bot is ready.
         """        
         
-        print(f"[:)] Bot is online @ {self.user.name} ({self.user.id})")
+        print.success("Bot", f"Bot is online @ {self.user.name} ({self.user.id})")
         
+        # Register cogs
+        for cog in os.listdir("cogs"):
+            if cog.endswith(".py"):
+                await self.load_extension(f"cogs.{cog[:-3]}")
+        
+        # Start services
         for service in self.Services:
             await service.Start(self)
