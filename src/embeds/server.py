@@ -53,7 +53,6 @@ def embed(server: Server) -> discord.Embed:
                 f"**⚙️ | {server.Gamemode} Server • " + ("🔒 | Password Protected" if server.PasswordProtected == PasswordProtected.Protected else "🔓 | No Password") + "**",
                 f"🔗 | " + (f"{server.IP}:{server.Port}" if not env.GetHideIP() else "IP Hidden"),
                 f"👥 | {server.Players}/{server.MaxPlayers} Players",
-                "",
                 f"-# Refreshes every {env.GetStatusRefreshRate():.1f} seconds",
             ]),
             
