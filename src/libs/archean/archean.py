@@ -53,6 +53,10 @@ class Archean():
     """  
   
     def __init__(self):
+        """
+        Initializes the Archean class.
+        """        
+        
         self.URL = "https://api.archean.space"
         
     def _Request(self, method: str, endpoint: str) -> requests.Response:
