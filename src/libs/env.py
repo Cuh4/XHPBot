@@ -75,9 +75,9 @@ def GetServerIP() -> tuple[str, int]:
     
     return serverIP, int(serverPort)
 
-def GetRefreshRate() -> float:
+def GetStatusRefreshRate() -> float:
     """
-    Returns the refresh rate from the .env file.
+    Returns the server status refresh rate in seconds from the .env file.
 
     Raises:
         EnvironmentError: The refresh rate is not set in the .env file or is in an invalid format.

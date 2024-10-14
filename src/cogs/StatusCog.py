@@ -63,7 +63,7 @@ class StatusCog(BaseCog):
         self.Archean = Archean()
         self.ServerIP = env.GetServerIP()[0]
         self.ServerPort = env.GetServerIP()[1]
-        self.StatusLoop = loop(seconds = env.GetRefreshRate())(self.UpdateStatus)
+        self.StatusLoop = loop(seconds = env.GetStatusRefreshRate())(self.UpdateStatus)
         
     # ---- // Callbacks
     async def CogStartAsync(self):
