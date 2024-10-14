@@ -5,8 +5,6 @@
 ## 📚 | Overview
 A Discord bot for the XHP server.
 
-![Demo](imgs/example.png)
-
 ## ❓ | Requirements
 - **Python 3.12+**
 
