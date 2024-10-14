@@ -48,6 +48,7 @@ class Bot(commands.AutoShardedBot):
         """        
         
         super().__init__(
+            command_prefix = "!",
             intents = discord.Intents.all()
         )
         
