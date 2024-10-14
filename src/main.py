@@ -24,23 +24,18 @@ limitations under the License.
 """
 
 # ---- // Imports
-from libs.archean import (
-    Archean
-)
-
 import libs.env as env
-from libs.db import Database 
+
+from jsonstore import JsonStore
 
 from bot import Bot
 
 # ---- // Main
 # Create database
-database = Database(env.GetDatabasePath(), {
-    "status_message_id" : None
-})
+database = JsonStore(path = env.GetDatabasePath(), indent = 7)
 
 # Create bot
-bot = Bot(database, Archean())
+bot = Bot(database = database)
 
 # Run bot
-bot.run(env.GetBotToken())
+bot.run(token = env.GetBotToken())
