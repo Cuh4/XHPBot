@@ -147,6 +147,8 @@ class Bot(commands.Bot):
                 description = f"⛔ | The tracked server is offline.\n-# Last updated: {lastUpdated}",
                 color = discord.Color.red()
             )
+            
+            embed.set_footer(text = f"Open-Source @ {env.GetGitHubRepoURL()}")
         else:
             # Online message
             embed = discord.Embed(
