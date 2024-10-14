@@ -26,7 +26,8 @@ limitations under the License.
 # ---- // Imports
 from __future__ import annotations
 
-import requests
+import aiohttp
+import json
 from dataclasses import dataclass
 
 # Exceptions
@@ -48,18 +49,18 @@ class Archean():
     A class for interacting with Archean's web API.
     
     >>> archean = Archean()
-    >>> server = archean.Servers()[0]
+    >>> server = archean.GetServers()[0]
     >>> print(server.Name)
     """  
   
     def __init__(self):
         """
-        Initializes the Archean class.
+        Initializes Archean class objects.
         """        
         
-        self.URL = "https://api.archean.space"
+        self.URL = "https://api.archean.space/"
         
-    def _Request(self, method: str, endpoint: str) -> requests.Response:
+    async def _Request(self, method: str, endpoint: str) -> any:
         """
         Sends a HTTP request to the Archean API.
 
@@ -75,17 +76,18 @@ class Archean():
             requests.Response: The response from the Archean API.
         """        
         
-        response = requests.request(method, f"{self.URL}/{endpoint}")
+        async with aiohttp.ClientSession() as session:
+            response = await session.request(method = method, url = self.URL + endpoint)
+            
+            if not response.ok:
+                raise RequestFailure(f"Response failed with status code {response.status_code}")
+            
+            try:
+                return await response.json()
+            except json.decoder.JSONDecodeError as error:
+                raise InvalidJSON(f"Invalid JSON: {error}")
         
-        if not response.ok:
-            raise RequestFailure(f"Response failed with status code {response.status_code}")
-        
-        try:
-            return response.json()
-        except requests.JSONDecodeError as error:
-            raise InvalidJSON(f"Invalid JSON: {error}")
-        
-    def GetServers(self) -> list[Server]:
+    async def GetServers(self) -> list[Server]:
         """
         Returns a list of all online Archean servers.
 
@@ -93,7 +95,7 @@ class Archean():
             list[Server]: A list of all online Archean servers.
         """     
         
-        servers = self._Request("GET", "servers")
+        servers = await self._Request("GET", "servers")
         
         try:
             servers = servers["servers"]
@@ -102,7 +104,7 @@ class Archean():
         
         return [Server._FromDict(server) for server in servers]
     
-    def GetServerByID(self, ID: int) -> Server|None:
+    async def GetServerByID(self, ID: int) -> Server|None:
         """
         Returns the Archean server with the specified ID.
 
@@ -113,7 +115,7 @@ class Archean():
             Server|None: The Archean server with the specified ID, or None if not found.
         """     
         
-        servers = self.GetServers()
+        servers = await self.GetServers()
         
         for server in servers:
             if server.ID != ID:
@@ -121,7 +123,7 @@ class Archean():
             
             return server
         
-    def GetServerByIP(self, IP: str, port: int) -> Server|None:
+    async def GetServerByIP(self, IP: str, port: int) -> Server|None:
         """
         Returns the Archean server with the specified IP and port.
         
@@ -133,7 +135,7 @@ class Archean():
             Server|None: The Archean server with the specified IP and port, or None if not found.
         """
         
-        servers = self.GetServers()
+        servers = await self.GetServers()
         
         for server in servers:
             if server.IP != IP or server.Port != port:
@@ -141,7 +143,7 @@ class Archean():
             
             return server
         
-    def GetServersByGamemode(self, gamemode: Gamemode) -> list[Server]:
+    async def GetServersByGamemode(self, gamemode: Gamemode) -> list[Server]:
         """
         Returns a list of servers with a specific gamemode.
 
@@ -152,10 +154,10 @@ class Archean():
             list[Server]: A list of servers with the specified gamemode.
         """        
         
-        servers = self.GetServers()
+        servers = await self.GetServers()
         return [server for server in servers if server.Gamemode == gamemode]
     
-    def GetServersWithPassword(self, passwordProtected: PasswordProtected) -> list[Server]:
+    async def GetServersWithPassword(self, passwordProtected: PasswordProtected) -> list[Server]:
         """
         Returns a list of servers with a specific password protection status.
 
@@ -166,7 +168,7 @@ class Archean():
             list[Server]: A list of servers with the specified password protection status.
         """        
         
-        servers = self.GetServers()
+        servers = await self.GetServers()
         return [server for server in servers if server.PasswordProtected == passwordProtected]
         
 @dataclass

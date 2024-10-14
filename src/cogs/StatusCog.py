@@ -109,7 +109,7 @@ class StatusCog(BaseCog):
         
         self.Database.status_message_id = self.StatusMessage.id
         
-    def FetchServerInformation(self) -> Server|None:
+    async def FetchServerInformation(self) -> Server|None:
         """
         Returns the target server.
 
@@ -117,7 +117,7 @@ class StatusCog(BaseCog):
             Server|None: The server to show server status for.
         """        
         
-        return self.Archean.GetServerByIP(self.ServerIP, self.ServerPort)
+        return await self.Archean.GetServerByIP(self.ServerIP, self.ServerPort)
     
     async def UpdateStatus(self):
         """
@@ -126,7 +126,7 @@ class StatusCog(BaseCog):
         
         # Get server information
         try:
-            server = self.FetchServerInformation()
+            server = await self.FetchServerInformation()
         except Exception as error:
             print.error(self.qualified_name, f"Failed to fetch server information: {error}")
             server = None
@@ -148,7 +148,7 @@ class StatusCog(BaseCog):
             interaction (discord.Interaction): The context of the command.
         """            
         
-        server = self.FetchServerInformation()
+        server = await self.FetchServerInformation()
         await interaction.response.send_message(ephemeral = True, embed = embeds.CompactServer(server))
         
     @app_commands.command(name = "online")
@@ -161,7 +161,7 @@ class StatusCog(BaseCog):
             interaction (discord.Interaction): The context of the command.
         """             
         
-        server = self.FetchServerInformation()
+        server = await self.FetchServerInformation()
         
         if server is not None:
             await interaction.response.send_message(ephemeral = True, embed = embeds.Info(f"🟢 | The server is online."))
