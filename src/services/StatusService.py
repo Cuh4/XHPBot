@@ -37,11 +37,14 @@ import time
 import libs.env as env
 import libs.embeds as embeds
 import libs.timestamp as timestamp
+from libs import print
 
 from libs.archean import (
     Server,
     PasswordProtected
 )
+
+import embeds
 
 from . import BaseService
 
@@ -79,14 +82,14 @@ class StatusService(BaseService):
             if self.StatusChannel is None: # get_channel() returns None
                 raise discord.NotFound
         except discord.NotFound:
-            print("[>] Status channel doesn't exist. Please create one and update .env!")
+            print.error(self.Name, "Status channel doesn't exist. Please create one and update .env!")
             exit(0)
 
         # Get message if already sent, otherwise send a new one
         try:
             self.StatusMessage = await self.StatusChannel.fetch_message(self.GetSavedStatusMessageID() or 0)
         except discord.NotFound:
-            print("[>] Status message doesn't exist. Sending a new one!")
+            print.info(self.Name, "Status message doesn't exist. Sending a new one!")
             self.StatusMessage = await self.StatusChannel.send(embed = embeds.Info("Setting up..."))
             self.SaveStatusMessageID()
         
@@ -131,43 +134,11 @@ class StatusService(BaseService):
         try:
             server = self.FetchServerInformation()
         except Exception as error:
-            print(f"[-] Failed to fetch server information: {error}")
+            print.error(self.Name, f"Failed to fetch server information: {error}")
             server = None
-        
-        # For later
-        lastUpdated = f"{timestamp.FormatTimestamp(time.time(), "R")}"
-        
-        # Create embed
-        if server is None:
-            # Offline message
-            embed = discord.Embed(
-                title = "Server Status",
-                description = f"⛔ | The tracked server is offline.\n-# Last updated: {lastUpdated}",
-                color = discord.Color.red()
-            )
-            
-            embed.set_footer(text = f"Open-Source @ {env.GetGitHubRepoURL()}")
-        else:
-            # Online message
-            embed = discord.Embed(
-                title = f"☀️ | {server.Name}",
-
-                description = "\n".join([
-                    f"**⚙️ | {server.Gamemode} Server • " + ("🔒 | Password Protected" if server.PasswordProtected == PasswordProtected.Protected else "🔓 | No Password") + "**",
-                    f"🔗 | " + (f"{server.IP}:{server.Port}" if not env.GetHideIP() else "IP Hidden"),
-                    f"👥 | {server.Players}/{server.MaxPlayers} Players",
-                    "",
-                    f"-# Last Updated: {lastUpdated}"
-                ]),
-                
-                color = env.GetStatusEmbedColor()
-            )
-            
-            embed.set_footer(text = f"Server Version: v{server.Version} | Open-Source @ {env.GetGitHubRepoURL()}")
-            embed.set_image(url = env.GetStatusBannerURL())
         
         # Edit message
         try:
-            await self.StatusMessage.edit(embed = embed)
+            await self.StatusMessage.edit(embed = embeds.Server(server))
         except discord.HTTPException as error:
-            print(f"[-] Failed to update server status message: {error}")
+            print.error(self.Name, f"Failed to update server status message: {error}")
