@@ -163,7 +163,7 @@ class Bot(commands.Bot):
                 color = env.GetStatusEmbedColor()
             )
             
-            embed.set_footer(text = f"Server Version: v{server.Version}")
+            embed.set_footer(text = f"Server Version: v{server.Version} | Open-Source @ {env.GetGitHubRepoURL()}")
             embed.set_image(url = env.GetStatusBannerURL())
         
         # Edit message

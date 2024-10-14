@@ -180,3 +180,13 @@ def GetHideIP() -> bool:
     """
     
     return os.getenv("hide_ip") == "yes"
+
+def GetGitHubRepoURL() -> str:
+    """
+    Returns the GitHub repo URL from the .env file.
+
+    Returns:
+        str: The GitHub repo URL.
+    """
+    
+    return os.getenv("github_repo_url")
