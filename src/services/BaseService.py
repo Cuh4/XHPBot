@@ -32,6 +32,8 @@ if TYPE_CHECKING: # prevent circular dependency error. we only need this bot imp
 from threading import Thread
 from abc import abstractmethod
 
+from libs import print
+
 # ---- // Main
 class BaseService():
     """
@@ -63,7 +65,7 @@ class BaseService():
         self.StartThread = Thread(target = self.ServiceStart, args = [bot])
         
         # Print
-        print(f"[-->] Started '{self.Name}'")
+        print.success("Service", f"Started '{self.Name}'")
         
         # Call methods
         self.StartThread.start()
