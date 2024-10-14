@@ -47,8 +47,10 @@ def _print(title: str, color: str, *args, separator: str = " "):
     if len(title) > maxTitleLength:
         title = title[:maxTitleLength - 3] + "..."
 
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     spacing = " " * (maxTitleLength - len(title))
-    print(f"{Back.BLACK}{color}{datetime.now()}{Back.RESET}{spacing}{title}{Fore.RESET}: {separator.join(args)}")
+    
+    print(f"{Back.BLACK}{color}{now}{Back.RESET}{spacing}{title}{Fore.RESET}: {separator.join(args)}")
     
 def success(title: str, *args, **kwargs):
     """
