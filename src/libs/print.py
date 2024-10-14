@@ -44,6 +44,8 @@ def _print(title: str, color: str, *args, separator: str = " "):
         separator (str, optional): The separator used between the provided args. Defaults to " ".
     """
     
+    args = [str(arg) for arg in args]
+    
     if len(title) > maxTitleLength:
         title = title[:maxTitleLength - 3] + "..."
 
