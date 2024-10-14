@@ -25,7 +25,6 @@ limitations under the License.
 
 # ---- // Imports
 import discord
-import time
 
 from libs.archean import (
     Server,
@@ -33,7 +32,6 @@ from libs.archean import (
 )
 
 from libs import env
-from libs import timestamp
 
 # ---- // Main
 def embed(server: Server) -> discord.Embed:
@@ -47,8 +45,6 @@ def embed(server: Server) -> discord.Embed:
         discord.Embed: The created embed.
     """    
     
-    lastUpdated = f"{timestamp.FormatTimestamp(time.time(), "R")}"
-    
     if server:
         embed = discord.Embed(
             title = f"☀️ | {server.Name}",
@@ -58,7 +54,7 @@ def embed(server: Server) -> discord.Embed:
                 f"🔗 | " + (f"{server.IP}:{server.Port}" if not env.GetHideIP() else "IP Hidden"),
                 f"👥 | {server.Players}/{server.MaxPlayers} Players",
                 "",
-                f"-# Last Updated: {lastUpdated}"
+                f"-# Refreshes every {env.GetStatusRefreshRate():.1f} seconds",
             ]),
             
             color = env.GetStatusEmbedColor()
