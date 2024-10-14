@@ -26,19 +26,17 @@ limitations under the License.
 # ---- // Imports
 import discord
 from discord.ext import commands
-from discord.ext.tasks import loop
 
-import time
+from threading import Thread
 
-import libs.env as env
-import libs.embeds as embeds
-import libs.timestamp as timestamp
 from libs.db import Database
 
 from libs.archean import (
-    Archean,
-    Server,
-    PasswordProtected
+    Archean
+)
+
+from services import (
+    StatusService
 )
 
 # ---- // Main
@@ -63,11 +61,13 @@ class Bot(commands.Bot):
         
         self.Database = database
         self.Archean = archean
-        self.StatusRefreshRate = env.GetRefreshRate()
-        self.ServerIP = env.GetServerIP()[0]
-        self.ServerPort = env.GetServerIP()[1]
         
-        self.StatusLoop = loop(seconds = self.StatusRefreshRate)(self.UpdateStatus)
+        # Services
+        self.StatusService = StatusService()
+        
+        self.Services = [
+            self.StatusService
+        ]
 
     async def on_ready(self):
         """
@@ -75,101 +75,6 @@ class Bot(commands.Bot):
         """        
         
         print(f"[:)] Bot is online @ {self.user.name} ({self.user.id})")
-        print(f"[>] Server status task has started. Tracking {self.ServerIP}:{self.ServerPort}.")
         
-        try:
-            self.StatusChannel = self.get_channel(env.GetStatusChannel()) or await self.fetch_channel(env.GetStatusChannel())
-            
-            if self.StatusChannel is None: # get_channel() returns None
-                raise discord.NotFound
-        except discord.NotFound:
-            print("[>] Status channel doesn't exist. Please create one and update .env!")
-            exit(0)
-
-        try:
-            self.StatusMessage = await self.StatusChannel.fetch_message(self.GetSavedStatusMessageID() or 0)
-        except discord.NotFound:
-            print("[>] Status message doesn't exist. Sending a new one!")
-            self.StatusMessage = await self.StatusChannel.send(embed = embeds.Info("Setting up..."))
-            self.SaveStatusMessageID()
-        
-        self.StatusLoop.start()
-        
-    def GetSavedStatusMessageID(self) -> int|None:
-        """
-        Returns the message ID of the server status message if any.
-
-        Returns:
-            int|None: The message ID, or none if not saved.
-        """        
-        
-        return self.Database.Load().get("status_message_id")
-    
-    def SaveStatusMessageID(self):
-        """
-        Saves the message ID of the server status message.
-        """        
-        
-        self.Database.Save({
-            "status_message_id" : self.StatusMessage.id
-        })
-        
-    def FetchServerInformation(self) -> Server|None:
-        """
-        Returns the target server.
-
-        Returns:
-            Server|None: The server to show server status for.
-        """        
-        
-        return self.Archean.GetServerByIP(self.ServerIP, self.ServerPort)
-    
-    async def UpdateStatus(self):
-        """
-        Updates server status.
-        """        
-        
-        # Get server information
-        try:
-            server = self.FetchServerInformation()
-        except Exception as error:
-            print(f"[-] Failed to fetch server information: {error}")
-            server = None
-        
-        # For later
-        lastUpdated = f"{timestamp.FormatTimestamp(time.time(), "R")}"
-        
-        # Create embed
-        if server is None:
-            # Offline message
-            embed = discord.Embed(
-                title = "Server Status",
-                description = f"⛔ | The tracked server is offline.\n-# Last updated: {lastUpdated}",
-                color = discord.Color.red()
-            )
-            
-            embed.set_footer(text = f"Open-Source @ {env.GetGitHubRepoURL()}")
-        else:
-            # Online message
-            embed = discord.Embed(
-                title = f"☀️ | {server.Name}",
-
-                description = "\n".join([
-                    f"**⚙️ | {server.Gamemode} Server • " + ("🔒 | Password Protected" if server.PasswordProtected == PasswordProtected.Protected else "🔓 | No Password") + "**",
-                    f"🔗 | " + (f"{server.IP}:{server.Port}" if not env.GetHideIP() else "IP Hidden"),
-                    f"👥 | {server.Players}/{server.MaxPlayers} Players",
-                    "",
-                    f"-# Last Updated: {lastUpdated}"
-                ]),
-                
-                color = env.GetStatusEmbedColor()
-            )
-            
-            embed.set_footer(text = f"Server Version: v{server.Version} | Open-Source @ {env.GetGitHubRepoURL()}")
-            embed.set_image(url = env.GetStatusBannerURL())
-        
-        # Edit message
-        try:
-            await self.StatusMessage.edit(embed = embed)
-        except discord.HTTPException as error:
-            print(f"[-] Failed to update server status message: {error}")
+        for service in self.Services:
+            await service.Start(self)
