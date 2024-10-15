@@ -51,10 +51,9 @@ def embed(server: Server) -> discord.Embed:
 
             description = "\n".join([
                 f"**🗻 | {server.Gamemode}**",
-                ("🔒 | Password Protected" if server.PasswordProtected == PasswordProtected.Protected else "🔓 | No Password"),
+                "🔒 | Password Protected" if server.PasswordProtected == PasswordProtected.Protected else "🔓 | No Password",
                 f"🔗 | " + (f"{server.IP}:{server.Port}" if not env.GetHideIP() else "IP Hidden"),
-                f"👥 | {server.Players}/{server.MaxPlayers} Players",
-                f"-# Refreshes every {env.GetStatusRefreshRate():.1f} seconds",
+                f"👥 | {server.Players}/{server.MaxPlayers} Players"
             ]),
             
             color = env.GetStatusEmbedColor()
@@ -65,8 +64,9 @@ def embed(server: Server) -> discord.Embed:
     else:
         embed = discord.Embed(
             title = "Server",
-            description = f"⛔ | The server is offline.\n-# Last updated: {lastUpdated}",
+            description = f"⛔ | The server is offline.",
             color = discord.Color.red()
         )
         
+    embed.description += f"\n-# Refreshes every {env.GetStatusRefreshRate():.1f} seconds"
     return embed
