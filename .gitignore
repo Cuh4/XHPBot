@@ -8,3 +8,7 @@ __pycache__
 # data
 .vscode
 src/data
+
+# dev
+TODO.md
+venv
