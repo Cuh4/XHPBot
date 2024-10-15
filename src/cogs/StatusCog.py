@@ -26,7 +26,6 @@ limitations under the License.
 # ---- // Imports
 import discord
 from discord.ext.tasks import loop
-from discord.ext import commands
 from discord import app_commands
 
 from cogs.BaseCog import BaseCog
