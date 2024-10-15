@@ -50,7 +50,7 @@ def embed(server: Server) -> discord.Embed:
             title = f"☀️ | {server.Name}",
 
             description = "\n".join([
-                f"**⚙️ | {server.Gamemode} Server**",
+                f"**⚙️ | {server.Gamemode}**",
                 "🔒 | Password Protected" if server.PasswordProtected == PasswordProtected.Protected else "🔓 | No Password",
                 f"👥 | {server.Players}/{server.MaxPlayers} Players",
             ]),
