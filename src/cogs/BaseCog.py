@@ -24,7 +24,6 @@ limitations under the License.
 """
 
 # ---- // Imports
-import discord
 from discord.ext import commands
 import threading
 
@@ -47,7 +46,8 @@ class BaseCog(commands.Cog):
         """        
         
         self.Bot = bot
-        self.Database = self.Bot.Database
+        self.JSONDB = self.Bot.JSONDatabase
+        self.SQLDB = self.Bot.SQLDatabase
         
     async def Start(self):
         """

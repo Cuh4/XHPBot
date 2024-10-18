@@ -27,15 +27,15 @@ limitations under the License.
 import discord
 from discord.ext.tasks import loop
 from discord import app_commands
-
-from cogs.BaseCog import BaseCog
+import os
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from bot import Bot
 
-import libs.env as env
+from cogs.BaseCog import BaseCog
+
 from libs import print
 
 from libs.archean import (
@@ -60,16 +60,16 @@ class StatusCog(BaseCog):
         super().__init__(bot)
 
         self.Archean = Archean()
-        self.ServerIP = env.GetServerIP()[0]
-        self.ServerPort = env.GetServerIP()[1]
+        self.ServerIP = os.getenv("server_ip").split(":")[0]
+        self.ServerPort = int(os.getenv("server_ip").split(":")[1])
         
-        self.StatusLoop = loop(seconds = env.GetStatusRefreshRate())(self.UpdateStatus)
+        self.StatusLoop = loop(seconds = float(os.getenv("status_update_interval")))(self.UpdateStatus)
 
     # ---- // Callbacks
     async def CogStartAsync(self):
         # Get channel for server status message
         try:
-            self.StatusChannel = self.Bot.get_channel(env.GetStatusChannel()) or await self.Bot.fetch_channel(env.GetStatusChannel())
+            self.StatusChannel = self.Bot.get_channel(os.getenv("status_channel")) or await self.Bot.fetch_channel(os.getenv("status_channel"))
             
             if self.StatusChannel is None: # get_channel() returns None
                 raise discord.NotFound
@@ -79,36 +79,17 @@ class StatusCog(BaseCog):
 
         # Get message if already sent, otherwise send a new one
         try:
-            self.StatusMessage = await self.StatusChannel.fetch_message(self.GetSavedStatusMessageID() or 0)
+            self.StatusMessage = await self.StatusChannel.fetch_message(self.JSONDB.Get("StatusMessageID") or 0)
         except discord.NotFound:
             print.info(self.qualified_name, "Status message doesn't exist. Sending a new one!")
+
             self.StatusMessage = await self.StatusChannel.send(embed = embeds.Info("Setting up..."))
-            self.SaveStatusMessageID()
+            self.JSONDB.Set("StatusMessageID", self.StatusMessage.id)
             
         # Start loop
         self.StatusLoop.start()
         
     # ---- // Methods
-    def GetSavedStatusMessageID(self) -> int|None:
-        """
-        Returns the message ID of the server status message if any.
-
-        Returns:
-            int|None: The message ID, or none if not saved.
-        """        
-        
-        try:
-            return self.Database.status_message_id
-        except AttributeError:
-            return None
-    
-    def SaveStatusMessageID(self):
-        """
-        Saves the message ID of the server status message.
-        """        
-        
-        self.Database.status_message_id = self.StatusMessage.id
-        
     async def FetchServerInformation(self) -> Server|None:
         """
         Returns the target server.

@@ -33,8 +33,6 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from bot import Bot
 
-from libs import env
-
 from datetime import datetime, timedelta
 
 # ---- // Main
@@ -68,6 +66,6 @@ def embed(bot: "Bot") -> discord.Embed:
     embed.add_field(name = "Memory Usage", value = f"{memoryUsage:.1f}MB", inline = True)
     embed.add_field(name = "CPU Usage", value = f"{CPUUsagePercent:.1f}%", inline = True)
     embed.add_field(name = "Uptime", value = f"{uptimeFormatted}", inline = True)
-    embed.add_field(name = "Source Code", value = f"[**Click Here**]({env.GetGitHubRepoURL()})", inline = False)
+    embed.add_field(name = "Source Code", value = f"[**Click Here**]({os.getenv("github_repo_url")})", inline = False)
     
     return embed

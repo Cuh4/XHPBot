@@ -25,13 +25,14 @@ limitations under the License.
 
 # ---- // Imports
 import discord
+import os
+
+import models
 
 from libs.archean import (
     Server,
     PasswordProtected
 )
-
-from libs import env
 
 # ---- // Main
 def embed(server: Server) -> discord.Embed:
@@ -43,24 +44,27 @@ def embed(server: Server) -> discord.Embed:
 
     Returns:
         discord.Embed: The created embed.
-    """    
+    """
     
     if server:
+        peak = models.ServerStatistic.get_peak_player_count()
+        
         embed = discord.Embed(
             title = f"☀️ | {server.Name}",
 
             description = "\n".join([
-                f"**🗻 | {server.Gamemode}**",
+                f"🗻 | {server.Gamemode}",
                 "🔒 | Password Protected" if server.PasswordProtected == PasswordProtected.Protected else "🔓 | No Password",
-                f"🔗 | " + (f"{server.IP}:{server.Port}" if not env.GetHideIP() else "IP Hidden"),
-                f"👥 | {server.Players}/{server.MaxPlayers} Players"
+                f"🔗 | " + (f"`{server.IP}:{server.Port}`" if os.getenv("status_hide_ip") != "yes" else "IP Hidden"),
+                f"👥 | `{server.Players}`/`{server.MaxPlayers}` Players",
+                f"🔥 | Peak Player Count: {f"<t:{int(peak.Time)}:R> with `{peak.PlayerCount}/{peak.MaxPlayers}` players." if peak else "N/A"}"
             ]),
             
-            color = env.GetStatusEmbedColor()
+            color = discord.Color.from_rgb(125, 200, 125)
         )
         
         embed.set_footer(text = f"Server Version: v{server.Version}")
-        embed.set_image(url = env.GetStatusBannerURL())
+        embed.set_image(url = os.getenv("status_banner"))
     else:
         embed = discord.Embed(
             title = "Server",
@@ -68,5 +72,5 @@ def embed(server: Server) -> discord.Embed:
             color = discord.Color.red()
         )
         
-    embed.description += f"\n-# Refreshes every {env.GetStatusRefreshRate():.1f} seconds"
+    embed.description += f"\n-# Refreshes every {float(os.getenv("status_update_interval")):.1f} seconds"
     return embed

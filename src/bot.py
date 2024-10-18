@@ -25,13 +25,13 @@ limitations under the License.
 
 # ---- // Imports
 import discord
+import peewee
 from discord.ext import commands
-
 import os
 import time
 
-from jsonstore import JsonStore
 from libs import print
+import libs.JSONDB as JSONDB
 
 # ---- // Main
 class Bot(commands.AutoShardedBot):
@@ -39,12 +39,13 @@ class Bot(commands.AutoShardedBot):
     A custom class descending from discord.ext.commands.Bot.
     """    
     
-    def __init__(self, database: JsonStore):
+    def __init__(self, SQLDB: peewee.Database, JSONDB: JSONDB.Database):
         """
         Initializes the bot.
 
         Args:
-            database (Database): The database to use.
+            SQLDB (peewee.Database): The database to use (SQL). This will be used for storing data that will be updated frequently or requires >1 records.
+            JSONDB (JSONDB.Database): The database to use (JSON). This will be used for storing data that won't be updated much.
         """        
         
         super().__init__(
@@ -52,7 +53,8 @@ class Bot(commands.AutoShardedBot):
             intents = discord.Intents.all()
         )
         
-        self.Database = database
+        self.SQLDatabase = SQLDB
+        self.JSONDatabase = JSONDB
         self.StartedAt = 0
         self.Ready = False
 
@@ -70,7 +72,7 @@ class Bot(commands.AutoShardedBot):
         """
         Called before websocket connection, but after client login.
         Used to setup cogs, etc.
-        """        
+        """
         
         self.StartedAt = time.time()
         await self.LoadCogs()

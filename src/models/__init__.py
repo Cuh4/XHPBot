@@ -1,9 +1,9 @@
 # // ---------------------------------------------------------------------
-# // ------- [Libs] Archean - Exceptions
+# // ------- [Models] Init
 # // ---------------------------------------------------------------------
 
 """
-A module containing exceptions raised during failures.
+A collection of Peewee database models.
 Repo: https://github.com/Cuh4/XHPBot
 
 ---
@@ -23,24 +23,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-# ---- // Main
-class RequestFailure(Exception):
-    """
-    Raised when a HTTP request to the Archean API fails.
-    """
+# ---- // Imports
+import peewee
+proxy = peewee.DatabaseProxy()
 
-    pass
+from .ServerStatistic import ServerStatistic
 
-class InvalidJSON(Exception):
-    """
-    Raised when the Archean API returns invalid JSON.
-    """
+# ---- // Variables
+all = [model for model in locals().values() if isinstance(model, peewee.ModelBase)]
 
-    pass
-
-class InvalidSchema(Exception):
+# ---- // Functions
+def latch(database: peewee.Database, tables: list[peewee.ModelBase]):
     """
-    Raised when the Archean API returns a response with an unexpected schema.
-    """
+    Initializes the database proxy and creates tables.
 
-    pass
+    Args:
+        database (peewee.Database): The database to use.
+        tables (list[peewee.ModelBase]): The tables to create.
+    """
+    
+    proxy.initialize(database)
+    database.create_tables(tables)

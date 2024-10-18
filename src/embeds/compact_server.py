@@ -31,7 +31,7 @@ from libs.archean import (
     PasswordProtected
 )
 
-from libs import env
+import os
 
 # ---- // Main
 def embed(server: Server) -> discord.Embed:
@@ -55,7 +55,7 @@ def embed(server: Server) -> discord.Embed:
                 f"👥 | {server.Players}/{server.MaxPlayers} Players",
             ]),
             
-            color = env.GetStatusEmbedColor()
+            color = discord.Color.from_rgb(125, 200, 125)
         )
     else:
         embed = discord.Embed(

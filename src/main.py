@@ -24,18 +24,32 @@ limitations under the License.
 """
 
 # ---- // Imports
-import libs.env as env
+from playhouse.sqliteq import SqliteQueueDatabase
+import os
+from dotenv import load_dotenv
 
-from jsonstore import JsonStore
-
+import models
+import libs.print as print
+import libs.JSONDB as JSONDB
 from bot import Bot
 
 # ---- // Main
-# Create database
-database = JsonStore(path = env.GetDatabasePath(), indent = 7)
+# Load .env
+load_dotenv()
+
+# Create databases
+SQLDB = SqliteQueueDatabase(os.getenv("sqldb_path"))
+models.latch(SQLDB, models.all)
+
+print.success("Database", "Created tables for models: " + ", ".join([model.__name__ for model in models.all]))
+
+JSONDatabase = JSONDB.Database(os.getenv("jsondb_path"))
+JSONDatabase.SetSchema({
+    "StatusMessageID" : JSONDB.SchemaValue(valueType = int, default = 0)
+})
 
 # Create bot
-bot = Bot(database = database)
+bot = Bot(SQLDB = SQLDB, JSONDB = JSONDatabase)
 
 # Run bot
-bot.run(token = env.GetBotToken())
+bot.run(token = os.getenv("bot_token"))
