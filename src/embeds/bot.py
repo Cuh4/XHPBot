@@ -62,7 +62,7 @@ class Bot(discord.Embed):
         
         # Create embed
         self.title = "Bot Information"
-        self.color = color = discord.Color.from_rgb(175, 255, 175)
+        self.color = discord.Color.from_rgb(175, 255, 175)
         self.description = "\n".join([f"`/{command.name}`: {command.description}" for command in bot.tree.get_commands()])
         
         self.add_field(name = "Memory Usage", value = f"{memory_usage:.1f}MB", inline = True)
