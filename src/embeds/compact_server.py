@@ -54,7 +54,7 @@ class CompactServer(discord.Embed):
             self.title = f"☀️ | {server.name}"
 
             self.description = "\n".join([
-                f"**⚙️ | {str(server.gamemode).capitalize()}",
+                f"⚙️ | {str(server.gamemode).capitalize()}",
                 "🔒 | Password Protected" if server.password_protected == PasswordProtected.PROTECTED else "🔓 | No Password",
                 f"👥 | {server.players}/{server.max_players} Players",
             ])
