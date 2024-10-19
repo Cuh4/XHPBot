@@ -33,5 +33,15 @@ if TYPE_CHECKING:
 
 # ---- // Main
 def ready(interaction: discord.Interaction) -> bool:
+    """
+    Checks if the bot behind an interaction is ready.
+
+    Args:
+        interaction (discord.Interaction): The context of the command
+
+    Returns:
+        bool: Whether the bot is ready
+    """    
+    
     bot: Bot = interaction.client
     return bot.ready
