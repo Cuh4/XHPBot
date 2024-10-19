@@ -37,12 +37,13 @@ from bot import Bot
 # Load .env
 load_dotenv()
 
-# Create databases
+# Create SQL database
 sql_database = SqliteQueueDatabase(os.getenv("sqldb_path"))
 models.latch(sql_database, models.all)
 
-print.success("Database", "Created tables for models: " + ", ".join([model.__name__ for model in models.all]))
+print.success("Database", "Created tables for DB: " + ", ".join([model.__name__ for model in models.all]))
 
+# Create JSON database
 json_database = json_db.Database(os.getenv("jsondb_path"))
 json_database.set_schema({
     "status_message_id" : json_db.SchemaValue(value_type = int, default = 0)
