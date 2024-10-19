@@ -130,7 +130,7 @@ class StatusCog(BaseCog):
         """            
         
         server = await self.fetch_server_information()
-        await interaction.response.send_message(ephemeral = True, embed = embeds.compact_server(server))
+        await interaction.response.send_message(ephemeral = True, embed = embeds.CompactServer(server))
         
     @app_commands.command(name = "online")
     @app_commands.check(checks.bot.ready)
