@@ -56,14 +56,28 @@ class Server(discord.Embed):
         if server:
             peak = models.ServerStatistic.get_peak_player_count()
             
+            if peak is None:
+                self.title = "Error"
+                self.description = "No server statistics. This should fix itself on its own."
+                self.color = discord.Color.from_rgb(200, 125, 125)
+                
+                return
+            
             self.title = f"☀️ | {server.name}"
 
             self.description = "\n".join([
-                f"🗻 | {str(server.gamemode).capitalize()}",
-                "🔒 | Password Protected" if server.password_protected == PasswordProtected.PROTECTED else "🔓 | No Password",
-                f"🔗 | " + (f"`{server.ip}:{server.port}`" if os.getenv("status_hide_ip") != "yes" else "IP Hidden"),
-                f"👥 | `{server.players}`/`{server.max_players}` Players",
-                f"🔥 | Peak Player Count: {f"{timestamp(peak.time, "R")} with `{peak.player_count}/{peak.max_players}` players." if peak else "N/A"}"
+                # 1st row
+                f"🗻 | **{str(server.gamemode).capitalize()} Mode**" + " • "
+                    + (f"🔗 | **{server.ip}:{server.port}**" if os.getenv("status_hide_ip") != "yes" else "**IP Hidden**") + " • "
+                    + ("🔒 | **Password Protected**" if server.password_protected == PasswordProtected.PROTECTED else "🔓 | **No Password**"),
+                    
+                # Separator
+                "",
+
+                # 2nd-3rd row
+                "🟢 | **Online**",
+                f"👥 | `{server.players}`/`{server.max_players}` **Players**",
+                f"🔥 | **Peak: {timestamp(peak.time, "R")} with** `{peak.player_count}/{peak.max_players}` **players.**"
             ])
             
             self.color = discord.Color.from_rgb(125, 200, 125)

@@ -25,6 +25,7 @@ limitations under the License.
 
 # ---- // Imports
 import discord
+import os
 
 from libs.archean import (
     Server,
@@ -54,9 +55,13 @@ class CompactServer(discord.Embed):
             self.title = f"☀️ | {server.name}"
 
             self.description = "\n".join([
-                f"⚙️ | {str(server.gamemode).capitalize()}",
-                "🔒 | Password Protected" if server.password_protected == PasswordProtected.PROTECTED else "🔓 | No Password",
-                f"👥 | {server.players}/{server.max_players} Players",
+                # 1st row
+                (f"**⚙️ | {str(server.gamemode).capitalize()}**") + " • "
+                    + (f"🔗 | **{server.ip}:{server.port}**" if os.getenv("status_hide_ip") != "yes" else "**IP Hidden**") + " • "
+                    + ("**🔒 | Password Protected**" if server.password_protected == PasswordProtected.PROTECTED else "**🔓 | No Password**"),
+
+                # 2nd row
+                f"👥 | `{server.players}/{server.max_players}` **Players**",
             ])
             
             self.color = discord.Color.from_rgb(125, 200, 125)
