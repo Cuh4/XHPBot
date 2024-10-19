@@ -29,48 +29,50 @@ import os
 
 import models
 
-from libs.archean import (
-    Server,
-    PasswordProtected
-)
+from libs.archean import Server as ArcheanServer
+from libs.archean import PasswordProtected
+
+from libs.timestamp import timestamp
 
 # ---- // Main
-def embed(server: Server) -> discord.Embed:
+class Server(discord.Embed):
     """
-    Returns an embed that shows information on an Archean server.
-
-    Args:
-        server (Server): The server to show information on.
-
-    Returns:
-        discord.Embed: The created embed.
+    An embed displaying information on a server.
     """
     
-    if server:
-        peak = models.ServerStatistic.get_peak_player_count()
-        
-        embed = discord.Embed(
-            title = f"☀️ | {server.Name}",
+    def __init__(self, server: ArcheanServer|None):
+        """
+        An embed displaying information on a server.
 
-            description = "\n".join([
-                f"🗻 | {server.Gamemode}",
-                "🔒 | Password Protected" if server.PasswordProtected == PasswordProtected.Protected else "🔓 | No Password",
-                f"🔗 | " + (f"`{server.IP}:{server.Port}`" if os.getenv("status_hide_ip") != "yes" else "IP Hidden"),
-                f"👥 | `{server.Players}`/`{server.MaxPlayers}` Players",
-                f"🔥 | Peak Player Count: {f"<t:{int(peak.Time)}:R> with `{peak.PlayerCount}/{peak.MaxPlayers}` players." if peak else "N/A"}"
-            ]),
+        Args:
+            server (ArcheanServer|None): The server to show information on.
+
+        Returns:
+            Embed: The embed.
+        """
+        
+        super().__init__()
+        
+        if server:
+            peak = models.ServerStatistic.get_peak_player_count()
             
-            color = discord.Color.from_rgb(125, 200, 125)
-        )
-        
-        embed.set_footer(text = f"Server Version: v{server.Version}")
-        embed.set_image(url = os.getenv("status_banner"))
-    else:
-        embed = discord.Embed(
-            title = "Server",
-            description = f"⛔ | The server is offline.",
-            color = discord.Color.red()
-        )
-        
-    embed.description += f"\n-# Refreshes every {float(os.getenv("status_update_interval")):.1f} seconds"
-    return embed
+            self.title = f"☀️ | {server.name}"
+
+            self.description = "\n".join([
+                f"🗻 | {str(server.gamemode).capitalize()}",
+                "🔒 | Password Protected" if server.password_protected == PasswordProtected.PROTECTED else "🔓 | No Password",
+                f"🔗 | " + (f"`{server.ip}:{server.port}`" if os.getenv("status_hide_ip") != "yes" else "IP Hidden"),
+                f"👥 | `{server.players}`/`{server.max_players}` Players",
+                f"🔥 | Peak Player Count: {f"{timestamp(peak.time, "R")} with `{peak.player_count}/{peak.max_players}` players." if peak else "N/A"}"
+            ])
+            
+            self.color = discord.Color.from_rgb(125, 200, 125)
+            
+            self.set_footer(text = f"Server Version: v{server.version}")
+            self.set_image(url = os.getenv("status_banner"))
+        else:
+            self.title = "Server"
+            self.description = f"⛔ | The server is offline."
+            self.color = discord.Color.red()
+            
+        self.description += f"\n-# Refreshes every {float(os.getenv("status_update_interval")):.1f} seconds"

@@ -31,9 +31,9 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from bot import Bot
-    from cogs.StatusCog import StatusCog
+    from cogs.status_cog import StatusCog
 
-from cogs.BaseCog import BaseCog
+from cogs.base_cog import BaseCog
 
 from libs import print
 
@@ -52,22 +52,22 @@ class StatisticsCog(BaseCog):
         
         super().__init__(bot)
 
-        self.StatisticsLoop = loop(minutes = float(os.getenv("statistics_update_interval")))(self.UpdateStatistics)
+        self.statistics_loop = loop(minutes = float(os.getenv("statistics_update_interval")))(self.update_statistics)
 
     # ---- // Callbacks
-    async def CogStartAsync(self):
-        self.StatusCog: "StatusCog" = self.Bot.get_cog("StatusCog")
-        self.StatisticsLoop.start()
+    async def cog_start_async(self):
+        self.status_cog: "StatusCog" = self.bot.get_cog("StatusCog")
+        self.statistics_loop.start()
         
     # ---- // Methods
-    async def UpdateStatistics(self):
+    async def update_statistics(self):
         """
         Updates server statistics.
         """        
         
         # Get server information
         try:
-            server = await self.StatusCog.FetchServerInformation()
+            server = await self.status_cog.fetch_server_information()
         except Exception as error:
             print.error(self.qualified_name, f"Failed to fetch server information: {error}")
             server = None

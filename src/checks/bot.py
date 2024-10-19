@@ -25,7 +25,6 @@ limitations under the License.
 
 # ---- // Imports
 import discord
-from discord import app_commands
 
 from typing import TYPE_CHECKING
 
@@ -33,6 +32,6 @@ if TYPE_CHECKING:
     from bot import Bot
 
 # ---- // Main
-def Ready(interaction: discord.Interaction) -> bool:
+def ready(interaction: discord.Interaction) -> bool:
     bot: Bot = interaction.client
-    return bot.Ready
+    return bot.ready

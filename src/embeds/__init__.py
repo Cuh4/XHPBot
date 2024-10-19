@@ -24,9 +24,9 @@ limitations under the License.
 """
 
 # ---- // Imports
-from .bot import embed as Bot
-from .compact_server import embed as CompactServer
-from .error import embed as Error
-from .info import embed as Info
-from .server import embed as Server
-from .success import embed as Success
+from .bot import Bot
+from .compact_server import CompactServer
+from .info import Info
+from .error import Error
+from .success import Success
+from .server import Server

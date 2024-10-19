@@ -24,7 +24,7 @@ limitations under the License.
 """
 
 # ---- // Main
-def FormatTimestamp(timestamp: int|float, mode: str) -> str:
+def timestamp(timestamp: int|float, mode: str) -> str:
     """
     Formats a timestamp into a Discord timestamp.
 

@@ -45,28 +45,28 @@ class BaseCog(commands.Cog):
         Initializes `BaseCog` class objects.
         """        
         
-        self.Bot = bot
-        self.JSONDB = self.Bot.JSONDatabase
-        self.SQLDB = self.Bot.SQLDatabase
+        self.bot = bot
+        self.json_db = self.bot.json_database
+        self.sql_db = self.bot.sql_database
         
-    async def Start(self):
+    async def start(self):
         """
         Starts this cog.
         """
         
-        threading.Thread(target = self.CogStart).start()
-        await self.CogStartAsync()
+        threading.Thread(target = self.cog_start).start()
+        await self.cog_start_async()
         
     @commands.Cog.listener("on_ready")
-    async def OnReadyListener(self):
+    async def on_ready_listener(self):
         """
         Called when the bot is ready.
         """
         
-        await self.Start()
+        await self.start()
         
     @abstractmethod
-    def CogStart(self):
+    def cog_start(self):
         """
         Called when the cog is started (non-async).
         """
@@ -74,7 +74,7 @@ class BaseCog(commands.Cog):
         pass
         
     @abstractmethod
-    async def CogStartAsync(self):
+    async def cog_start_async(self):
         """
         Called when the cog is started (async).
         """

@@ -31,37 +31,36 @@ from libs.archean import (
     PasswordProtected
 )
 
-import os
-
 # ---- // Main
-def embed(server: Server) -> discord.Embed:
+class CompactServer(discord.Embed):
     """
-    Returns an embed that shows compacted information on an Archean server.
-
-    Args:
-        server (Server): The server to show information on.
-
-    Returns:
-        discord.Embed: The created embed.
-    """    
+    An embed displaying information on a server.
+    """
     
-    if server:
-        embed = discord.Embed(
-            title = f"☀️ | {server.Name}",
+    def __init__(self, server: Server|None):
+        """
+        An embed displaying information on a server.
 
-            description = "\n".join([
-                f"**⚙️ | {server.Gamemode}**",
-                "🔒 | Password Protected" if server.PasswordProtected == PasswordProtected.Protected else "🔓 | No Password",
-                f"👥 | {server.Players}/{server.MaxPlayers} Players",
-            ]),
-            
-            color = discord.Color.from_rgb(125, 200, 125)
-        )
-    else:
-        embed = discord.Embed(
-            title = "Server",
-            description = f"⛔ | The server is offline.",
-            color = discord.Color.red()
-        )
+        Args:
+            server (Server|None): The server to show information on.
+
+        Returns:
+            Embed: The embed.
+        """
         
-    return embed
+        super().__init__()
+        
+        if server:
+            self.title = f"☀️ | {server.name}"
+
+            self.description = "\n".join([
+                f"**⚙️ | {str(server.gamemode).capitalize()}",
+                "🔒 | Password Protected" if server.password_protected == PasswordProtected.PROTECTED else "🔓 | No Password",
+                f"👥 | {server.players}/{server.max_players} Players",
+            ])
+            
+            self.color = discord.Color.from_rgb(125, 200, 125)
+        else:
+            self.title = "Server"
+            self.description = f"⛔ | The server is offline."
+            self.color = discord.Color.red()

@@ -29,7 +29,7 @@ from colorama import Fore, Back
 from datetime import datetime
 
 # ---- // Variables
-maxTitleLength = 15
+MAX_TITLE_LENGTH = 15
 
 # ---- // Main
 colorama.init()
@@ -46,11 +46,11 @@ def _print(title: str, color: str, *args, separator: str = " "):
     
     args = [str(arg) for arg in args]
     
-    if len(title) > maxTitleLength:
-        title = title[:maxTitleLength - 3] + "..."
+    if len(title) > MAX_TITLE_LENGTH:
+        title = title[:MAX_TITLE_LENGTH - 3] + "..."
 
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    spacing = " " * (maxTitleLength - len(title))
+    spacing = " " * (MAX_TITLE_LENGTH - len(title))
     
     print(f"{Back.BLACK}{color}{now}{Back.RESET}{spacing}{title}{Fore.RESET}: {separator.join(args)}")
     

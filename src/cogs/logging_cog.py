@@ -27,7 +27,7 @@ limitations under the License.
 import discord
 from discord.ext import commands
 
-from cogs.BaseCog import BaseCog
+from cogs.base_cog import BaseCog
 
 from typing import TYPE_CHECKING
 
@@ -51,7 +51,7 @@ class LoggingCog(BaseCog):
         
     # ---- // Events
     @commands.Cog.listener("on_interaction")
-    async def OnInteractionListener(self, interaction: discord.Interaction):
+    async def on_interaction_listener(self, interaction: discord.Interaction):
         """
         Called when an interaction is received.
 

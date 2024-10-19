@@ -31,7 +31,7 @@ import os
 import time
 
 from libs import print
-import libs.JSONDB as JSONDB
+import libs.json_db as json_db
 
 # ---- // Main
 class Bot(commands.AutoShardedBot):
@@ -39,13 +39,13 @@ class Bot(commands.AutoShardedBot):
     A custom class descending from discord.ext.commands.Bot.
     """    
     
-    def __init__(self, SQLDB: peewee.Database, JSONDB: JSONDB.Database):
+    def __init__(self, sql_database: peewee.Database, json_database: json_db.Database):
         """
         Initializes the bot.
 
         Args:
-            SQLDB (peewee.Database): The database to use (SQL). This will be used for storing data that will be updated frequently or requires >1 records.
-            JSONDB (JSONDB.Database): The database to use (JSON). This will be used for storing data that won't be updated much.
+            sql_database (peewee.Database): The database to use (SQL). This will be used for storing data that will be updated frequently or requires >1 records.
+            json_database (JSONDB.Database): The database to use (JSON). This will be used for storing data that won't be updated much.
         """        
         
         super().__init__(
@@ -53,12 +53,12 @@ class Bot(commands.AutoShardedBot):
             intents = discord.Intents.all()
         )
         
-        self.SQLDatabase = SQLDB
-        self.JSONDatabase = JSONDB
-        self.StartedAt = 0
-        self.Ready = False
+        self.sql_database = sql_database
+        self.json_database = json_database
+        self.started_at = 0
+        self.ready = False
 
-    async def LoadCogs(self):
+    async def load_cogs(self):
         """
         Loads all cogs in the `cogs` directory.
         """
@@ -74,8 +74,8 @@ class Bot(commands.AutoShardedBot):
         Used to setup cogs, etc.
         """
         
-        self.StartedAt = time.time()
-        await self.LoadCogs()
+        self.started_at = time.time()
+        await self.load_cogs()
 
     async def on_ready(self):
         """
@@ -83,5 +83,5 @@ class Bot(commands.AutoShardedBot):
         """        
         
         print.success("Bot", f"Bot is online @ {self.user.name} ({self.user.id})")
-        self.Ready = True
+        self.ready = True
         await self.tree.sync()

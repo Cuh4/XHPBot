@@ -27,22 +27,30 @@ limitations under the License.
 import discord
 
 # ---- // Main
-def embed(text: str, title: str = None, imgBanner: str = None, imgIcon: str = None) -> discord.Embed:
+class Info(discord.Embed):
     """
-    Returns an info embed.
-
-    Args:
-        text (str): The text to display.
-        title (str): The title of the embed.
-        imgBanner (str): The banner image URL.
-        imgIcon (str): The icon image URL.
-        
-    Returns:
-        Embed: The info embed.
+    Represents an info embed.
     """
     
-    return discord.Embed(
-        title = title,
-        description = text,
-        color = discord.Color.from_rgb(125, 125, 255)
-    ).set_thumbnail(url = imgIcon).set_image(url = imgBanner)
+    def __init__(self, text: str, title: str = None, img_banner: str = None, img_icon: str = None):
+        """
+        Represents an info embed.
+
+        Args:
+            text (str): The text to display.
+            title (str): The title of the embed.
+            img_banner (str): The banner image URL.
+            img_icon (str): The icon image URL.
+
+        Returns:
+            Embed: The info embed.
+        """
+        
+        super().__init__()
+        
+        self.title = title
+        self.description = text
+        self.color = discord.Color.from_rgb(125, 125, 255)
+        
+        self.set_thumbnail(url = img_icon)
+        self.set_image(url = img_banner)

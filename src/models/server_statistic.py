@@ -38,11 +38,10 @@ class ServerStatistic(peewee.Model):
     A model containing data for server status, etc.
     """
 
-    ID = peewee.IntegerField(primary_key = True, unique = True)
-    Time = peewee.FloatField(default = time.time)
-    PlayerCount = peewee.IntegerField()
-    MaxPlayers = peewee.IntegerField()
-    Version = peewee.TextField()
+    time = peewee.FloatField(default = time.time)
+    player_count = peewee.IntegerField()
+    max_players = peewee.IntegerField()
+    version = peewee.TextField()
     
     class Meta:
         database = proxy
@@ -50,7 +49,7 @@ class ServerStatistic(peewee.Model):
     @classmethod
     def get_peak_player_count(cls) -> ServerStatistic|None:
         try:
-            return cls.select().order_by(cls.PlayerCount).limit(1).get()
+            return cls.select().order_by(cls.player_count.desc()).limit(1).get()
         except peewee.DoesNotExist:
             return None
         
@@ -67,7 +66,7 @@ class ServerStatistic(peewee.Model):
         """
         
         return cls.create(
-            PlayerCount = server.Players,
-            MaxPlayers = server.MaxPlayers,
-            Version = server.Version
+            player_count = server.players,
+            max_players = server.max_players,
+            version = server.version
         )

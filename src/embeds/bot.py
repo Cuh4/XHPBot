@@ -36,36 +36,36 @@ if TYPE_CHECKING:
 from datetime import datetime, timedelta
 
 # ---- // Main
-def embed(bot: "Bot") -> discord.Embed:
+class Bot(discord.Embed):
     """
-    Returns an embed giving info on the provided bot.
-
-    Args:
-        bot (Bot): The bot.
-
-    Returns:
-        Embed: The success embed.
+    An embed displaying information on the provided bot.
     """
     
-    # Embed
-    embed = discord.Embed(
-        title = "Bot Information",
-        color = discord.Color.from_rgb(175, 255, 175)
-    )
-    
-    # Stats
-    process = psutil.Process(os.getpid())
-    memoryUsage = process.memory_info().rss / (1024 ** 2)
-    CPUUsagePercent = process.cpu_percent()
-    uptimeFormatted = timedelta(seconds = (datetime.now() - datetime.fromtimestamp(bot.StartedAt)).seconds) # creating timedelta object when subtraction creates one anyway is purely for formatting https://stackoverflow.com/a/13409830
-    
-    # Commands
-    embed.description = "\n".join([f"`/{command.name}`: {command.description}" for command in bot.tree.get_commands()])
+    def __init__(self, bot: "Bot"):
+        """
+        An embed displaying information on the provided bot.
 
-    # Statistics/Links
-    embed.add_field(name = "Memory Usage", value = f"{memoryUsage:.1f}MB", inline = True)
-    embed.add_field(name = "CPU Usage", value = f"{CPUUsagePercent:.1f}%", inline = True)
-    embed.add_field(name = "Uptime", value = f"{uptimeFormatted}", inline = True)
-    embed.add_field(name = "Source Code", value = f"[**Click Here**]({os.getenv("github_repo_url")})", inline = False)
-    
-    return embed
+        Args:
+            bot (Bot): The bot.
+
+        Returns:
+            Embed: The embed.
+        """
+        
+        super().__init__()
+        
+        # Get stats
+        process = psutil.Process(os.getpid())
+        memory_usage = process.memory_info().rss / (1024 ** 2)
+        cpu_usage_percent = process.cpu_percent()
+        uptime_formatted = timedelta(seconds = (datetime.now() - datetime.fromtimestamp(bot.started_at)).seconds) # creating timedelta object when subtraction creates one anyway is purely for formatting https://stackoverflow.com/a/13409830
+        
+        # Create embed
+        self.title = "Bot Information"
+        self.color = color = discord.Color.from_rgb(175, 255, 175)
+        self.description = "\n".join([f"`/{command.name}`: {command.description}" for command in bot.tree.get_commands()])
+        
+        self.add_field(name = "Memory Usage", value = f"{memory_usage:.1f}MB", inline = True)
+        self.add_field(name = "CPU Usage", value = f"{cpu_usage_percent:.1f}%", inline = True)
+        self.add_field(name = "Uptime", value = f"{uptime_formatted}", inline = True)
+        self.add_field(name = "Source Code", value = f"[**Click Here**]({os.getenv("github_repo_url")})", inline = False)

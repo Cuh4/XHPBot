@@ -28,7 +28,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from cogs.BaseCog import BaseCog
+from cogs.base_cog import BaseCog
 
 from typing import TYPE_CHECKING
 
@@ -53,7 +53,7 @@ class InfoCog(BaseCog):
         
     # ---- // Events
     @commands.Cog.listener("on_message")
-    async def OnMessageListener(self, message: discord.Message):
+    async def on_message_listener(self, message: discord.Message):
         """
         Called when a message is received.
 
@@ -61,7 +61,7 @@ class InfoCog(BaseCog):
             message (discord.Message): The message received.
         """
         
-        if not self.Bot.user in message.mentions:
+        if not self.bot.user in message.mentions:
             return
         
         if message.author.bot:
@@ -71,11 +71,11 @@ class InfoCog(BaseCog):
         if message.reference is not None:
             message = await message.channel.fetch_message(message.reference.message_id)
         
-        await message.reply(embed = embeds.Bot(self.Bot), mention_author = True)
+        await message.reply(embed = embeds.Bot(self.bot), mention_author = True)
             
     # ---- // Commands
     @app_commands.command(name = "info")
-    @app_commands.check(checks.bot.Ready)
+    @app_commands.check(checks.bot.ready)
     async def InfoCommand(self, interaction: discord.Interaction):
         """
         Provides information about the bot.
@@ -84,7 +84,7 @@ class InfoCog(BaseCog):
             interaction (discord.Interaction): The context of the command.
         """              
         
-        await interaction.response.send_message(ephemeral = True, embed = embeds.Bot(self.Bot))
+        await interaction.response.send_message(ephemeral = True, embed = embeds.Bot(self.bot))
             
 async def setup(bot: "Bot"):
     """

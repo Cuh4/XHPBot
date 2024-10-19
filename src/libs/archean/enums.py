@@ -32,9 +32,9 @@ class Gamemode(Enum):
     The gamemode of a server.
     """
     
-    Creative = 0
-    Adventure = 1
-    Survival = 2
+    CREATIVE = 0
+    ADVENTURE = 1
+    SURVIVAL = 2
     
     def __str__(self) -> str:
         return self.name
@@ -44,8 +44,8 @@ class PasswordProtected(Enum):
     Whether or not a server is password protected.
     """
     
-    Unprotected = 0
-    Protected = 1
+    UNPROTECTED = 0
+    PROTECTED = 1
     
     def __str__(self) -> str:
         return self.name

@@ -27,7 +27,7 @@ limitations under the License.
 import peewee
 proxy = peewee.DatabaseProxy()
 
-from .ServerStatistic import ServerStatistic
+from .server_statistic import ServerStatistic
 
 # ---- // Variables
 all = [model for model in locals().values() if isinstance(model, peewee.ModelBase)]

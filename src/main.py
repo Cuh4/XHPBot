@@ -30,7 +30,7 @@ from dotenv import load_dotenv
 
 import models
 import libs.print as print
-import libs.JSONDB as JSONDB
+import libs.json_db as json_db
 from bot import Bot
 
 # ---- // Main
@@ -38,18 +38,18 @@ from bot import Bot
 load_dotenv()
 
 # Create databases
-SQLDB = SqliteQueueDatabase(os.getenv("sqldb_path"))
-models.latch(SQLDB, models.all)
+sql_database = SqliteQueueDatabase(os.getenv("sqldb_path"))
+models.latch(sql_database, models.all)
 
 print.success("Database", "Created tables for models: " + ", ".join([model.__name__ for model in models.all]))
 
-JSONDatabase = JSONDB.Database(os.getenv("jsondb_path"))
-JSONDatabase.SetSchema({
-    "StatusMessageID" : JSONDB.SchemaValue(valueType = int, default = 0)
+json_database = json_db.Database(os.getenv("jsondb_path"))
+json_database.set_schema({
+    "status_message_id" : json_db.SchemaValue(value_type = int, default = 0)
 })
 
 # Create bot
-bot = Bot(SQLDB = SQLDB, JSONDB = JSONDatabase)
+bot = Bot(sql_database = sql_database, json_database = json_database)
 
 # Run bot
 bot.run(token = os.getenv("bot_token"))

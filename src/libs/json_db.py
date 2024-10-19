@@ -33,23 +33,23 @@ class SchemaValue():
     Represents a value in a JSON database schema.
     """
     
-    def __init__(self, *, valueType: any, default: any):
+    def __init__(self, *, value_type: any, default: any):
         """
         Represents a value in a JSON database schema.
 
         Args:
-            valueType (any): The type of the value.
+            value_type (any): The type of the value.
             default (any): The default value to use if the value doesn't exist in the database.
 
         Raises:
             SchemaError: If the value type doesn't match the default provided.
         """
         
-        if type(default) != valueType:
-            raise SchemaError(f"Invalid default type for schema value: {type(default)} != {valueType}")
+        if type(default) != value_type:
+            raise SchemaError(f"Invalid default type for schema value: {type(default)} != {value_type}")
         
-        self.Type = valueType
-        self.Default = default
+        self.type = value_type
+        self.default = default
         
 
 class Database():
@@ -65,22 +65,22 @@ class Database():
             path (str): The path to the JSON database.
         """        
         
-        self.Path = path
-        self.Schema: dict[str, SchemaValue] = {}
-        self.Data = {}
+        self.path = path
+        self.schema: dict[str, SchemaValue] = {}
+        self.data = {}
         
         try:
-            self._Load()
+            self._load()
         except:
-            self._Validate()
-            self._Save()
+            self._validate()
+            self._save()
             
-    def _CreatePath(self):
+    def _create_path(self):
         """
         Creates the path to the JSON database file.
         """
         
-        path = os.path.dirname(self.Path)
+        path = os.path.dirname(self.path)
         
         if path == "":
             return
@@ -88,66 +88,66 @@ class Database():
         if not os.path.exists(path):
             os.makedirs(path)
         
-    def _Load(self):
+    def _load(self):
         """
         Loads the database.
         """
         
         try:
-            self._CreatePath()
-            
-            with open(self.Path, "r") as file:
+            with open(self.path, "r") as file:
                 data = json.load(file)
-                self.Data = data
-                self._Validate()
+                self.data = data
+                self._validate()
         except Exception as error:
             raise DatabaseError(f"Failed to load database: {error}")
         
-    def _Save(self):
+    def _save(self):
         """
         Saves the database.
         """
         
         try:
-            with open(self.Path, "w") as file:
-                json.dump(self.Data, file, indent = 7)
+            self._create_path()
+            
+            with open(self.path, "w") as file:
+                json.dump(self.data, file, indent = 7)
         except Exception as error:
             raise DatabaseError(f"Failed to save database: {error}")
         
-    def _Validate(self):
+    def _validate(self):
         """
         Iterates through the schema and validates each value in the database by matching with the schema.
         """
         
-        for index, schemaValue in self.Schema.items():
-            savedValue = self.Data.get(index)
+        for index, schema_value in self.schema.items():
+            saved_value = self.data.get(index)
             
-            if type(savedValue) == schemaValue.Type:
+            if type(saved_value) == schema_value.type:
                 continue
             
-            self.Data[index] = schemaValue.Default
+            self.data[index] = schema_value.default
             
-    def GetSchemaValue(self, index: str) -> SchemaValue:
-        return self.Schema.get(index)
+    def get_schema_value(self, index: str) -> SchemaValue:
+        return self.schema.get(index)
         
-    def SetSchema(self, schema: dict[str, SchemaValue]):
+    def set_schema(self, schema: dict[str, SchemaValue]):
         """
         Sets the schema for this database.
         
-        >>> JSONDB = Database("db.json")
+        >>> json_db = Database("db.json")
         >>> 
-        >>> JSONDB.SetSchema({
-        >>>     "last_updated" : JSONSchemaValue(valueType = int, default = 0),
-        >>>     "foo" : JSONSchemaValue(valueType = str, default = "bar")
+        >>> json_db.set_schema({
+        >>>     "last_updated" : JSONSchemaValue(value_type = int, default = 0),
+        >>>     "foo" : JSONSchemaValue(value_type = str, default = "bar")
         >>> })
 
         Args:
             schema (dict): The schema to use.
         """        
         
-        self.Schema = schema
+        self.schema = schema
         
-    def Set(self, index: str, value: any):
+    def set(self, index: str, value: any):
         """
         Sets a value in the database.
 
@@ -156,18 +156,18 @@ class Database():
             value (any): The value to set.
         """
         
-        schemaValue = self.GetSchemaValue(index)
+        schema_value = self.get_schema_value(index)
         
-        if schemaValue is None:
+        if schema_value is None:
             raise DatabaseError(f"Invalid index (not in schema): {index}")
         
-        if type(value) != schemaValue.Type:
-            raise DatabaseError(f"Invalid value type: {type(value)} != {schemaValue.Type}")
+        if type(value) != schema_value.type:
+            raise DatabaseError(f"Invalid value type: {type(value)} != {schema_value.type}")
         
-        self.Data[index] = value
-        self._Save()
+        self.data[index] = value
+        self._save()
         
-    def Get(self, index: str) -> any:
+    def get(self, index: str) -> any:
         """
         Returns a value from the database.
         
@@ -178,16 +178,16 @@ class Database():
             any: The value from the database.
         """
         
-        schemaValue = self.GetSchemaValue(index)
+        schema_value = self.get_schema_value(index)
         
-        if schemaValue is None:
+        if schema_value is None:
             raise DatabaseError(f"Invalid index (not in schema): {index}")
         
-        value = self.Data.get(index)
+        value = self.data.get(index)
         
-        if type(value) != schemaValue.Type:
-            self._Validate()
-            value = schemaValue.Default
+        if type(value) != schema_value.type:
+            self._validate()
+            value = schema_value.default
         
         return value
         
