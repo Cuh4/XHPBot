@@ -57,7 +57,7 @@ class CompactServer(discord.Embed):
             self.description = "\n".join([
                 # 1st row
                 (f"**⚙️ | {str(server.gamemode).capitalize()}**") + " • "
-                    + (f"🔗 | **{server.ip}:{server.port}**" if os.getenv("status_hide_ip") != "yes" else "**IP Hidden**") + " • "
+                    + f"🔗 | " + (f"**{server.ip}:{server.port}**" if os.getenv("status_hide_ip") != "yes" else "**IP Hidden**") + " • "
                     + ("**🔒 | Password Protected**" if server.password_protected == PasswordProtected.PROTECTED else "**🔓 | No Password**"),
 
                 # 2nd row
