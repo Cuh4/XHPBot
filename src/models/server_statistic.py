@@ -48,6 +48,13 @@ class ServerStatistic(peewee.Model):
         
     @classmethod
     def get_peak_player_count(cls) -> ServerStatistic|None:
+        """
+        Returns the ServerStatistic record with the highest `player_count`. 
+
+        Returns:
+            ServerStatistic|None: The record found, or none if none found.
+        """
+
         try:
             return cls.select().order_by(cls.player_count.desc()).limit(1).get()
         except peewee.DoesNotExist:
