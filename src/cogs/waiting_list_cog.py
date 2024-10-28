@@ -160,7 +160,7 @@ class WaitingListCog(BaseCog):
         
         # Remove waitee record
         await interaction.response.send_message(ephemeral = True, embed = embeds.Success(f"You will no longer be notified when the server reaches a player count of `{waitee.wants_player_count}`."))
-        waitee.delete()
+        waitee.delete_instance()
             
 async def setup(bot: "Bot"):
     """
