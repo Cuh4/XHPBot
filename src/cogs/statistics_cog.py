@@ -70,7 +70,7 @@ class StatisticsCog(BaseCog):
             server = await self.status_cog.fetch_server_information()
         except Exception as error:
             print.error(self.qualified_name, f"Failed to fetch server information: {error}")
-            server = None
+            return
         
         # Update statistics
         try:
