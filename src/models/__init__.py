@@ -28,6 +28,7 @@ import peewee
 proxy = peewee.DatabaseProxy()
 
 from .server_statistic import ServerStatistic
+from .waitee import Waitee
 
 # ---- // Variables
 all = [model for model in locals().values() if isinstance(model, peewee.ModelBase)]
