@@ -29,6 +29,7 @@ from __future__ import annotations
 import peewee
 import discord
 import time
+from bot import Bot
 
 from . import proxy
 
@@ -62,6 +63,40 @@ class Waitee(peewee.Model):
             user_id = user.id,
             wants_player_count = player_count
         )
+        
+    async def get_user(self, bot: Bot) -> discord.User|None:
+        """
+        Returns the user associated with the Waitee record.
+
+        Args:
+            bot (Bot): The bot to use for retrieving the user.
+
+        Returns:
+            discord.User|None: The user associated with the Waitee record, or None if not found.
+        """     
+        
+        try:
+            user = bot.get_user(self.user_id) or await bot.fetch_user(self.user_id)
+            return user
+        except:
+            return
+        
+    @classmethod
+    def get_waitee(cls, user: discord.User) -> Waitee|None:
+        """
+        Returns the Waitee record for the provided user.
+
+        Args:
+            user (discord.User): The user to retrieve the Waitee record for.
+
+        Returns:
+            Waitee|None: The Waitee record for the user, or None if not found.
+        """        
+
+        try:
+            return cls.get(user_id = user.id)
+        except peewee.DoesNotExist:
+            return
         
     @classmethod
     def get_waitees_for_player_count(cls, player_count: int) -> list[Waitee]:
