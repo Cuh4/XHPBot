@@ -57,7 +57,7 @@ class Database():
     A class for storing values into a JSON database.
     """
     
-    def __init__(self, path: str):
+    def __init__(self, path: str, schema: dict[str, SchemaValue] = None):
         """
         A class for storing values into a JSON database.
 
@@ -66,7 +66,7 @@ class Database():
         """        
         
         self.path = path
-        self.schema: dict[str, SchemaValue] = {}
+        self.schema: dict[str, SchemaValue] = schema
         self.data = {}
         
         try:
@@ -119,33 +119,21 @@ class Database():
         Iterates through the schema and validates each value in the database by matching with the schema.
         """
         
+        validated = {}
+        
         for index, schema_value in self.schema.items():
             saved_value = self.data.get(index)
             
             if type(saved_value) == schema_value.type:
+                validated[index] = saved_value
                 continue
             
-            self.data[index] = schema_value.default
+            validated[index] = schema_value.default
+            
+        self.data = validated
             
     def get_schema_value(self, index: str) -> SchemaValue:
         return self.schema.get(index)
-        
-    def set_schema(self, schema: dict[str, SchemaValue]):
-        """
-        Sets the schema for this database.
-        
-        >>> json_db = Database("db.json")
-        >>> 
-        >>> json_db.set_schema({
-        >>>     "last_updated" : JSONSchemaValue(value_type = int, default = 0),
-        >>>     "foo" : JSONSchemaValue(value_type = str, default = "bar")
-        >>> })
-
-        Args:
-            schema (dict): The schema to use.
-        """        
-        
-        self.schema = schema
         
     def set(self, index: str, value: any):
         """
