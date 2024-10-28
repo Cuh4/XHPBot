@@ -116,6 +116,11 @@ class WaitingListCog(BaseCog):
             await interaction.response.send_message(ephemeral = True, embed = embeds.Error(f"The player count provided is invalid. Keep it between `1-{server.max_players}`."))
             return
         
+        # Check if the player count is already reached
+        if player_count == server.players:
+            await interaction.response.send_message(ephemeral = True, embed = embeds.Error(f"The player count is already `{player_count}`."))
+            return
+        
         # Check if the user already has a waitee
         waitee = models.Waitee.get_waitee(interaction.user)
         
