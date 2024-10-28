@@ -51,6 +51,4 @@ json_database.set_schema({
 
 # Create bot
 bot = Bot(sql_database = sql_database, json_database = json_database)
-
-# Run bot
 bot.run(token = os.getenv("bot_token"))
