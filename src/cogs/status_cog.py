@@ -120,27 +120,29 @@ class StatusCog(BaseCog):
             
     # ---- // Commands
     @app_commands.command(name = "status")
-    @app_commands.check(checks.bot.ready)
     async def status_command(self, interaction: discord.Interaction):
         """
         Shows the status of the server.
 
         Args:
             interaction (discord.Interaction): The context of the command.
-        """            
+        """
+        
+        await checks.bot.ready(interaction)
         
         server = await self.fetch_server_information()
         await interaction.response.send_message(ephemeral = True, embed = embeds.CompactServer(server))
         
     @app_commands.command(name = "online")
-    @app_commands.check(checks.bot.ready)
     async def online_command(self, interaction: discord.Interaction):
         """
         Shows if the server is online or not.
 
         Args:
             interaction (discord.Interaction): The context of the command.
-        """             
+        """     
+        
+        await checks.bot.ready(interaction)        
         
         server = await self.fetch_server_information()
         

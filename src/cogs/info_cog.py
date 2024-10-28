@@ -75,15 +75,15 @@ class InfoCog(BaseCog):
             
     # ---- // Commands
     @app_commands.command(name = "info")
-    @app_commands.check(checks.bot.ready)
     async def InfoCommand(self, interaction: discord.Interaction):
         """
         Provides information about the bot.
 
         Args:
             interaction (discord.Interaction): The context of the command.
-        """              
+        """
         
+        await checks.bot.ready(interaction)
         await interaction.response.send_message(ephemeral = True, embed = embeds.Bot(self.bot))
             
 async def setup(bot: "Bot"):
