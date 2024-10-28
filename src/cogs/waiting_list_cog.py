@@ -88,7 +88,7 @@ class WaitingListCog(BaseCog):
                 
                 await dm_channel.send(embed = embeds.Success(
                     title = "Reminder",
-                    text = f"**The server has reached a player count of `{waitee.wants_player_count}`**.\nFeel free to join!\n\n-# This message was sent because you wanted to be notified when the server reaches a player count {timestamp.timestamp(waitee.start_time, "R")}."
+                    text = f"**The server has reached a player count of `{waitee.wants_player_count}`**.\nYou will not be reminded again unless you use `/wait` again.\n\n-# This message was sent because you wanted to be notified about this {timestamp.timestamp(waitee.start_time, "R")}."
                 ))
             except discord.DiscordException as error:
                 print.error(self.qualified_name, f"Failed to notify user: {error}")
