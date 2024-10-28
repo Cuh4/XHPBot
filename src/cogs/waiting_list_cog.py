@@ -86,14 +86,14 @@ class WaitingListCog(BaseCog):
                 user = await waitee.get_user(self.bot)
                 dm_channel = user.dm_channel or await user.create_dm()
                 
-                await dm_channel.send(embeds.Success(
-                    title = "Waiting List",
-                    text = f"The server has reached a player count of `{waitee.wants_player_count}`.\nFeel free to join!\n~# This message was sent because you wanted to be notified when the server reaches a player count {timestamp.timestamp(waitee.start_time, "R")}."
+                await dm_channel.send(embed = embeds.Success(
+                    title = "Reminder",
+                    text = f"**The server has reached a player count of `{waitee.wants_player_count}`**.\nFeel free to join!\n\n-# This message was sent because you wanted to be notified when the server reaches a player count {timestamp.timestamp(waitee.start_time, "R")}."
                 ))
             except discord.DiscordException as error:
                 print.error(self.qualified_name, f"Failed to notify user: {error}")
                 
-            waitee.delete()
+            waitee.delete_instance()
             
      # ---- // Commands
     @app_commands.command(name = "wait")
