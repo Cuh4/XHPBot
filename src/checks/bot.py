@@ -31,17 +31,22 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from bot import Bot
 
+from . import CheckFailed
+import embeds
+
 # ---- // Main
-def ready(interaction: discord.Interaction) -> bool:
+async def ready(interaction: discord.Interaction):
     """
-    Checks if the bot behind an interaction is ready.
+    Checks if the bot is ready in an app command.
 
     Args:
-        interaction (discord.Interaction): The context of the command
-
-    Returns:
-        bool: Whether the bot is ready
-    """    
+        interaction (discord.Interaction): The context of the command.
+    """
     
     bot: Bot = interaction.client
-    return bot.ready
+    
+    if bot.ready:
+        return
+    else:
+        await interaction.response.send_message(ephemeral = True, embed = embeds.Error("🔴 | The bot is not ready."))
+        raise CheckFailed("Bot isn't ready")
