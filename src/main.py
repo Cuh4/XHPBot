@@ -44,8 +44,7 @@ models.latch(sql_database, models.all)
 print.success("Database", "Created tables for DB: " + ", ".join([model.__name__ for model in models.all]))
 
 # Create JSON database
-json_database = json_db.Database(os.getenv("jsondb_path"))
-json_database.set_schema({
+json_database = json_db.Database(os.getenv("jsondb_path"), {
     "status_message_id" : json_db.SchemaValue(value_type = int, default = 0)
 })
 
