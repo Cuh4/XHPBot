@@ -41,9 +41,6 @@ class Info(discord.Embed):
             title (str): The title of the embed.
             img_banner (str): The banner image URL.
             img_icon (str): The icon image URL.
-
-        Returns:
-            Embed: The info embed.
         """
         
         super().__init__()

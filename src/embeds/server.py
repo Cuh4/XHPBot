@@ -46,9 +46,6 @@ class Server(discord.Embed):
 
         Args:
             server (ArcheanServer|None): The server to show information on.
-
-        Returns:
-            Embed: The embed.
         """
         
         super().__init__()

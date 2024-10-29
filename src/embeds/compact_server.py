@@ -44,9 +44,6 @@ class CompactServer(discord.Embed):
 
         Args:
             server (Server|None): The server to show information on.
-
-        Returns:
-            Embed: The embed.
         """
         
         super().__init__()

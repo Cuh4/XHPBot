@@ -42,9 +42,6 @@ class Success(Info):
             title (str): The title of the embed.
             img_banner (str): The banner image URL.
             img_icon (str): The icon image URL.
-
-        Returns:
-            Embed: The success embed.
         """
         
         super().__init__(text = text, title = title, img_banner = img_banner, img_icon = img_icon)

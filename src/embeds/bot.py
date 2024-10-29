@@ -47,9 +47,6 @@ class Bot(discord.Embed):
 
         Args:
             bot (Bot): The bot.
-
-        Returns:
-            Embed: The embed.
         """
         
         super().__init__()
