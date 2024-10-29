@@ -82,17 +82,19 @@ class WaitingListCog(BaseCog):
         
         # Find Waitees for server's player count
         for waitee in models.Waitee.get_waitees_for_player_count(server.players):
-            try:
+            try: # send to dms
                 user = await waitee.get_user(self.bot)
                 dm_channel = user.dm_channel or await user.create_dm()
                 
-                await dm_channel.send(embed = embeds.Success(
-                    title = "Reminder",
-                    text = f"**The server has reached a player count of `{waitee.wants_player_count}`**.\nYou will not be reminded again unless you use `/wait` again.\n\n-# This message was sent because you wanted to be notified about this {timestamp.timestamp(waitee.start_time, "R")}."
-                ))
-            except discord.DiscordException as error:
-                print.error(self.qualified_name, f"Failed to notify user: {error}")
-                
+                await dm_channel.send(embed = embeds.WaiteeReminder(waitee))
+            except Exception as error: # failed to send to dms, fallback to channel
+                try:
+                    user = await waitee.get_user(self.bot)
+                    channel = await waitee.get_fallback_channel(self.bot)
+                    await channel.send(content = user.mention, embed = embeds.WaiteeReminder(waitee, used_fallback = True))
+                except Exception as error:
+                    print.error(self.qualified_name, f"Failed to send waitee reminder to {user}: {error}")
+
             waitee.delete_instance()
             
      # ---- // Commands
@@ -124,19 +126,32 @@ class WaitingListCog(BaseCog):
         # Check if the user already has a waitee
         waitee = models.Waitee.get_waitee(interaction.user)
         
-        if waitee is not None:
+        if waitee is not None:    
+            # No point in modifying, user is already waiting for the same player count 
             if waitee.wants_player_count == player_count:
                 await interaction.response.send_message(ephemeral = True, embed = embeds.Error("You are already waiting for this player count."))
                 return
             
+            # Update
             waitee.wants_player_count = player_count
-            waitee.save()
+            
+            try:
+                waitee.save()
+            except:
+                await interaction.response.send_message(ephemeral = True, embed = embeds.Error("Failed to update your reminder."))
+                return
 
+            # Notify
             await interaction.response.send_message(ephemeral = True, embed = embeds.Success(f"You will now be notified when the server reaches a player count of `{player_count}`.\nNote that you just modified your existing reminder, so you will not be notified for the old player count.\nUse `/dismiss` to cancel."))
             return
         
         # Create new waitee
-        waitee = models.Waitee.wait_for_count(interaction.user, player_count)
+        try:
+            waitee = models.Waitee.wait_for_count(interaction.user, player_count, interaction.channel)
+        except:
+            await interaction.response.send_message(ephemeral = True, embed = embeds.Error("Failed to create a reminder."))
+            return
+            
         await interaction.response.send_message(ephemeral = True, embed = embeds.Success(f"You will now be notified when the server reaches a player count of `{player_count}`.\nUse `/dismiss` to cancel."))
         
     @app_commands.command(name = "dismiss")

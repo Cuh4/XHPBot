@@ -41,19 +41,21 @@ class Waitee(peewee.Model):
 
     user_id = peewee.IntegerField()
     wants_player_count = peewee.IntegerField()
+    fallback_channel_id = peewee.IntegerField()
     start_time = peewee.FloatField(default = time.time)
     
     class Meta:
         database = proxy
         
     @classmethod
-    def wait_for_count(cls, user: discord.User, player_count: int) -> Waitee:
+    def wait_for_count(cls, user: discord.User, player_count: int, channel: discord.TextChannel) -> Waitee:
         """
         Creates a Waitee record for the provided user.
 
         Args:
             user (discord.User): The user to create a Waitee record for.
             player_count (int): The player count to wait for.
+            channel (discord.TextChannel): The channel to send the reminder to if sending via DMs didn't work.
 
         Returns:
             Waitee: The created Waitee record.
@@ -61,7 +63,8 @@ class Waitee(peewee.Model):
         
         return cls.create(
             user_id = user.id,
-            wants_player_count = player_count
+            wants_player_count = player_count,
+            fallback_channel_id = channel.id
         )
         
     async def get_user(self, bot: Bot) -> discord.User|None:
@@ -76,8 +79,23 @@ class Waitee(peewee.Model):
         """     
         
         try:
-            user = bot.get_user(self.user_id) or await bot.fetch_user(self.user_id)
-            return user
+            return bot.get_user(self.user_id) or await bot.fetch_user(self.user_id)
+        except:
+            return
+        
+    async def get_fallback_channel(self, bot: Bot) -> discord.TextChannel|None:
+        """
+        Returns the fallback channel associated with the Waitee record.
+
+        Args:
+            bot (Bot): The bot to use for retrieving the channel.
+
+        Returns:
+            discord.TextChannel|None: The fallback channel associated with the Waitee record, or None if not found.
+        """     
+        
+        try:
+            return bot.get_channel(self.fallback_channel_id) or await bot.fetch_channel(self.fallback_channel_id)
         except:
             return
         
