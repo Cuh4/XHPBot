@@ -57,6 +57,13 @@ class Bot(commands.AutoShardedBot):
         self.json_database = json_database
         self.started_at = 0
         self.ready = False
+        
+    async def setup_activity(self):
+        """
+        Sets the bot's activity on Discord.
+        """
+        
+        await self.change_presence(activity = discord.Game("on XHP!"), status = discord.Status.do_not_disturb)
 
     async def load_cogs(self):
         """
@@ -84,4 +91,6 @@ class Bot(commands.AutoShardedBot):
         
         print.success("Bot", f"Bot is online @ {self.user.name} ({self.user.id})")
         self.ready = True
+        
+        await self.setup_activity()
         await self.tree.sync()
