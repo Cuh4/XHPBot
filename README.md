@@ -1,9 +1,9 @@
 ![Banner](imgs/readme_banner.png)
 
-# XHP Bot
+# cuhHub Archean Bot
 
 ## 📚 | Overview
-A neatly structured Discord bot for the XHP server, fully coded in Python using the `discord.py` library.
+A neatly structured Discord bot for the Archean side of cuhHub, fully coded in Python using the `discord.py` library.
 
 Features:
 - Consistently updated server status
@@ -12,7 +12,7 @@ Features:
 - Decent amount of commands
 
 ## 💡 | Setup
-1) Clone this repo via `git clone https://github.com/Cuh4/XHPBot`
+1) Clone this repo via `git clone https://github.com/cuhHub/ArcheanBot`
 2) Install package requirements via `pip install -r requirements.txt` (assuming you're using pip as a package manager)
 3) Rename `example.env` to `.env`
 4) Modify the `.env` file to your own liking. A bot token is mandatory, instructions are in the file.
