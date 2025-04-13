@@ -56,6 +56,10 @@ class StatisticsCog(BaseCog):
 
     # ---- // Callbacks
     async def cog_start_async(self):
+        """
+        Called when the cog starts.
+        """
+
         self.status_cog: "StatusCog" = self.bot.get_cog("StatusCog")
         self.statistics_loop.start()
         

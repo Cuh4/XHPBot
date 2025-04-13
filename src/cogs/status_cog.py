@@ -67,6 +67,10 @@ class StatusCog(BaseCog):
 
     # ---- // Callbacks
     async def cog_start_async(self):
+        """
+        Called when the cog starts.
+        """
+
         # Get channel for server status message
         try:
             self.status_channel = self.bot.get_channel(os.getenv("status_channel")) or await self.bot.fetch_channel(os.getenv("status_channel"))
