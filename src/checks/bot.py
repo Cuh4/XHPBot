@@ -4,7 +4,7 @@
 
 """
 A bunch of slash command checks relating to the bot itself.
-Repo: https://github.com/Cuh4/XHPBot
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 

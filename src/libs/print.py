@@ -4,7 +4,7 @@
 
 """
 A module for printing messages in a neat format.
-Repo: https://github.com/Cuh4/XHPBot
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 

@@ -4,7 +4,7 @@
 
 """
 A module of the Archean package containing the main classes.
-Repo: https://github.com/Cuh4/XHPBot
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 

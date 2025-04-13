@@ -4,7 +4,7 @@
 
 """
 A module for storing values in a JSON database.
-Repo: https://github.com/Cuh4/XHPBot
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 

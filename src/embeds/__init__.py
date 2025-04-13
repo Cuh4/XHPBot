@@ -4,7 +4,7 @@
 
 """
 A collection of embeds.
-Repo: https://github.com/Cuh4/XHPBot
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 

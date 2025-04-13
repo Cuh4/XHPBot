@@ -4,7 +4,7 @@
 
 """
 A model containing statistics for the XHP server at a given time.
-Repo: https://github.com/Cuh4/XHPBot
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 

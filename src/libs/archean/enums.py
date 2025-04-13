@@ -4,7 +4,7 @@
 
 """
 A module containing exceptions raised during failures.
-Repo: https://github.com/Cuh4/XHPBot
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 

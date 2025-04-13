@@ -4,7 +4,7 @@
 
 """
 An embed for displaying information on an Archean server.
-Repo: https://github.com/Cuh4/XHPBot
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 

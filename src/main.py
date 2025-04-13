@@ -1,10 +1,10 @@
 # // ---------------------------------------------------------------------
-# // ------- XHP Inc. Bot
+# // ------- cuhHub Archean Bot
 # // ---------------------------------------------------------------------
 
 """
-A Discord bot for the XHP Inc. server.
-Repo: https://github.com/Cuh4/XHPBot
+A Discord bot for the Archean side of cuhHub. Handles server status, etc.
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 

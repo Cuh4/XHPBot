@@ -4,7 +4,7 @@
 
 """
 A cog for showing the status of the XHP server, as well as providing commands.
-Repo: https://github.com/Cuh4/XHPBot
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 

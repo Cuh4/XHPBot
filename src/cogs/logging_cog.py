@@ -4,7 +4,7 @@
 
 """
 A cog for logging common bot events.
-Repo: https://github.com/Cuh4/XHPBot
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 

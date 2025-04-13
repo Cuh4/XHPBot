@@ -4,7 +4,7 @@
 
 """
 A base cog class to inherit from.
-Repo: https://github.com/Cuh4/XHPBot
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 

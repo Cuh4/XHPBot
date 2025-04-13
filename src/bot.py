@@ -4,7 +4,7 @@
 
 """
 A custom class descending from discord.ext.commands.Bot.
-Repo: https://github.com/Cuh4/XHPBot
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 

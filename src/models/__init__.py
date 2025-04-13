@@ -4,7 +4,7 @@
 
 """
 A collection of Peewee database models.
-Repo: https://github.com/Cuh4/XHPBot
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 

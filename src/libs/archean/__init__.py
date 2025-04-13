@@ -4,7 +4,7 @@
 
 """
 A package for interacting with Archean's web API.
-Repo: https://github.com/Cuh4/XHPBot
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 

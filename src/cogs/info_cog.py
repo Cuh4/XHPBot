@@ -4,7 +4,7 @@
 
 """
 A cog for providing commands related to bot info.
-Repo: https://github.com/Cuh4/XHPBot
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 

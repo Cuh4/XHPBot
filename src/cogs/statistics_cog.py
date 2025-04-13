@@ -4,7 +4,7 @@
 
 """
 A cog for tracking server statistics over time.
-Repo: https://github.com/Cuh4/XHPBot
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 

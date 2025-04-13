@@ -4,7 +4,7 @@
 
 """
 A model representing a user waiting for the server to reach a certain player count
-Repo: https://github.com/Cuh4/XHPBot
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 

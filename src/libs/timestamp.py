@@ -4,7 +4,7 @@
 
 """
 A module for interacting with Discord timestamps.
-Repo: https://github.com/Cuh4/XHPBot
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 

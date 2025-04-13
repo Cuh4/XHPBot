@@ -4,7 +4,7 @@
 
 """
 A cog for allowing users to get notified when the server reaches a player count.
-Repo: https://github.com/Cuh4/XHPBot
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 

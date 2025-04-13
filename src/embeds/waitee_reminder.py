@@ -4,7 +4,7 @@
 
 """
 An embed representing a reminder for a Waitee.
-Repo: https://github.com/Cuh4/XHPBot
+Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
 
