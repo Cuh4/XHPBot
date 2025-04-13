@@ -3,7 +3,7 @@
 # // ---------------------------------------------------------------------
 
 """
-A model containing statistics for the XHP server at a given time.
+A model containing statistics for the cuhHub Archean server at a given time.
 Repo: https://github.com/cuhHub/ArcheanBot
 
 ---

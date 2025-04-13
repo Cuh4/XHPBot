@@ -3,7 +3,7 @@
 # // ---------------------------------------------------------------------
 
 """
-A cog for showing the status of the XHP server, as well as providing commands.
+A cog for showing the status of the cuhHub Archean server, as well as providing commands.
 Repo: https://github.com/cuhHub/ArcheanBot
 
 ---
@@ -49,7 +49,7 @@ import checks
 # ---- // Main
 class StatusCog(BaseCog):
     """
-    A cog for showing the status of the XHP server.
+    A cog for showing the status of the cuhHub Archean server.
     """
     
     def __init__(self, bot: "Bot"):

@@ -63,7 +63,7 @@ class Bot(commands.AutoShardedBot):
         Sets the bot's activity on Discord.
         """
         
-        await self.change_presence(activity = discord.Game("on XHP!"), status = discord.Status.do_not_disturb)
+        await self.change_presence(activity = discord.Game("on cuhHub!"), status = discord.Status.do_not_disturb)
 
     async def load_cogs(self):
         """
