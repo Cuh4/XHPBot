@@ -173,8 +173,29 @@ class Archean():
         
 @dataclass
 class Server():
+    id: int
+    name: str
+    ip: str
+    port: int
+    branch: str
+    players: int
+    max_players: int
+    gamemode: Gamemode
+    password_protected: PasswordProtected
+    version: int
+
     @classmethod
     def _from_dict(cls, data: dict) -> Server:
+        """
+        Creates a server from a dictionary.
+
+        Args:
+            data (dict): The dictionary to create the server from.
+            
+        Returns:
+            Server: The created server.
+        """
+        
         return cls(
             id = data["id"],
             name = data["name"],
@@ -187,14 +208,3 @@ class Server():
             password_protected = PasswordProtected(data["pswd"]),
             version = data["version"]
         )
-    
-    id: int
-    name: str
-    ip: str
-    port: int
-    branch: str
-    players: int
-    max_players: int
-    gamemode: Gamemode
-    password_protected: PasswordProtected
-    version: int
