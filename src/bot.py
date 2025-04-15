@@ -56,7 +56,9 @@ class Bot(commands.AutoShardedBot):
         self.sql_database = sql_database
         self.json_database = json_database
         self.started_at = 0
+
         self.ready = False
+        self.setup = False
         
     async def setup_activity(self):
         """
@@ -81,7 +83,12 @@ class Bot(commands.AutoShardedBot):
         Used to setup cogs, etc.
         """
         
+        if self.setup:
+            return
+        
+        self.setup = True   
         self.started_at = time.time()
+
         await self.load_cogs()
 
     async def on_ready(self):
