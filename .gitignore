@@ -6,9 +6,9 @@ __pycache__
 *.pyc
 
 # data
-.vscode
-src/data
+data
 
 # dev
 TODO.md
 venv
+.vscode
