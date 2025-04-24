@@ -72,6 +72,9 @@ class StatisticsCog(BaseCog):
         # Get server information
         try:
             server = await self.status_cog.fetch_server_information()
+            
+            if server is None:
+                raise Exception("Server is offline or unreachable.")
         except Exception as error:
             print.error(self.qualified_name, f"Failed to fetch server information: {error}")
             return
