@@ -32,6 +32,8 @@ from libs.archean import (
     PasswordProtected
 )
 
+from libs.server import get_server_ip
+
 # ---- // Main
 class CompactServer(discord.Embed):
     """
@@ -54,7 +56,7 @@ class CompactServer(discord.Embed):
             self.description = "\n".join([
                 # 1st row
                 (f"**⚙️ | {str(server.gamemode).capitalize()}**") + " • "
-                    + f"🔗 | " + (f"**{server.ip}:{server.port}**" if os.getenv("status_hide_ip") != "yes" else "**IP Hidden**") + " • "
+                    + f"🔗 | **{get_server_ip(server) or "IP Hidden"}** • "
                     + ("**🔒 | Password Protected**" if server.password_protected == PasswordProtected.PROTECTED else "**🔓 | No Password**"),
 
                 # 2nd row
