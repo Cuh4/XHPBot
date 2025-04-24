@@ -26,6 +26,7 @@ limitations under the License.
 # ---- // Imports
 from __future__ import annotations
 
+import os
 import aiohttp
 import json
 from dataclasses import dataclass
@@ -77,7 +78,9 @@ class Archean():
         """        
         
         async with aiohttp.ClientSession() as session:
-            response = await session.request(method = method, url = self.url + endpoint)
+            response = await session.request(method = method, url = self.url + endpoint, headers = {
+                "User-Agent": f"{os.getenv("github_repo_url").replace("https://github.com/", "")} ({os.getenv("github_repo_url")})"
+            })
             
             if not response.ok:
                 raise RequestFailure(f"Response failed with status code {response.status_code}")
