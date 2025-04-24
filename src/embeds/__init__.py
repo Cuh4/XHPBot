@@ -31,3 +31,4 @@ from .error import Error
 from .success import Success
 from .server import Server
 from .waitee_reminder import WaiteeReminder
+from .live_chat import LiveChat
